@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 
-export const liabilities = new Hono()
+export const liabilitiesRoute = new Hono()
   .get("/", (c) => {
     return c.json({ liabilities: [] });
   })
