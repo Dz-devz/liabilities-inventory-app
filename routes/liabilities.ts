@@ -1,10 +1,16 @@
 import { Hono } from "hono";
+import z from "zod";
 
 type Liabilities = {
   id: number;
   title: string;
   amount: number;
 };
+
+const createSchema = z.object({
+  title: z.string(),
+  amount: z.number(),
+});
 
 const dummyData: Liabilities[] = [
   {
@@ -40,6 +46,6 @@ export const liabilitiesRoute = new Hono()
   })
   .post("/", async (c) => {
     const data = await c.req.json();
-    console.log(data);
-    return c.json(data);
+    const parseData = createSchema.parse(data);
+    return c.json(parseData);
   });
