@@ -13,6 +13,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.2.2",
     "expense-inventroy-app": "file:",
     "hono": "^4.5.3",
     "zod": "^3.23.8"

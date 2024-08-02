@@ -1,3 +1,4 @@
+import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import z from "zod";
 
@@ -8,8 +9,8 @@ type Liabilities = {
 };
 
 const createSchema = z.object({
-  title: z.string(),
-  amount: z.number(),
+  title: z.string().min(2).max(50),
+  amount: z.number().int().positive(),
 });
 
 const dummyData: Liabilities[] = [
@@ -44,8 +45,8 @@ export const liabilitiesRoute = new Hono()
   .get("/", (c) => {
     return c.json({ liabilities: dummyData });
   })
-  .post("/", async (c) => {
-    const data = await c.req.json();
-    const parseData = createSchema.parse(data);
-    return c.json(parseData);
+  .post("/", zValidator("json", createSchema), async (c) => {
+    const data = await c.req.valid("json");
+    dummyData.push({ ...data, id: dummyData.length });
+    return c.json(data);
   });
