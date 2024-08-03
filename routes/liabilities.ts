@@ -2,11 +2,13 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import z from "zod";
 
-type Liabilities = {
-  id: number;
-  title: string;
-  amount: number;
-};
+const liabilitiesSchema = z.object({
+  id: z.number().int().positive().min(1),
+  title: z.string().min(2).max(50),
+  amount: z.number().int().positive(),
+});
+
+type Liabilities = z.infer<typeof liabilitiesSchema>;
 
 const createSchema = z.object({
   title: z.string().min(2).max(50),
@@ -48,6 +50,7 @@ export const liabilitiesRoute = new Hono()
   .post("/", zValidator("json", createSchema), async (c) => {
     const data = await c.req.valid("json");
     dummyData.push({ ...data, id: dummyData.length });
+    c.status(201);
     return c.json(data);
   })
   .get("/:id{[0-9]+}", (c) => {
@@ -57,4 +60,13 @@ export const liabilitiesRoute = new Hono()
       return c.notFound();
     }
     return c.json({ specificData });
+  })
+  .delete("/:id{[0-9]+}", (c) => {
+    const id = Number.parseInt(c.req.param("id"));
+    const indexData = dummyData.findIndex((data) => data.id === id);
+    if (indexData === 0) {
+      return c.notFound();
+    }
+    const deletedData = dummyData.splice(indexData, 1)[0];
+    return c.json({ data: deletedData });
   });
