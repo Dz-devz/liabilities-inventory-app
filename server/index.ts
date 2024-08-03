@@ -1,7 +1,6 @@
-import app from "./app";
-
+import handler from "./app";
 Bun.serve({
-  fetch: app.fetch,
+  fetch: handler.fetch,
 });
 
 console.log("Server is Running");
