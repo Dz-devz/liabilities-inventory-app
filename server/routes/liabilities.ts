@@ -53,6 +53,10 @@ export const liabilitiesRoute = new Hono()
     c.status(201);
     return c.json(data);
   })
+  .get("/total-drained", (c) => {
+    const total = dummyData.reduce((acc, data) => acc + data.amount, 0);
+    return c.json({ total });
+  })
   .get("/:id{[0-9]+}", (c) => {
     const id = Number.parseInt(c.req.param("id"));
     const specificData = dummyData.find((data) => data.id === id);
