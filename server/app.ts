@@ -1,4 +1,3 @@
-import { handle } from "@hono/node-server/vercel";
 import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import { logger } from "hono/logger";
@@ -12,7 +11,5 @@ app.route("/api/liabilities", liabilitiesRoute);
 
 app.get("*", serveStatic({ root: "./client/dist" }));
 app.get("*", serveStatic({ path: "./client/dist/index.html" }));
-
-const handler = handle(app);
 
 export default app;
