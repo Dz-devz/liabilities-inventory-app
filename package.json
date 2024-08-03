@@ -1,15 +1,13 @@
 {
   "name": "expense-inventroy-app",
-  "module": "server/index.ts",
+  "main": "server/index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun server/index.ts",
-    "dev": "bun --watch server/index.ts"
+    "start": "node server/index.ts",
+    "dev": "nodemon server/index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
+    "@types/node": "latest",
     "typescript": "^5.0.0"
   },
   "dependencies": {
