@@ -1,7 +1,8 @@
-import handler from "./app";
+import { handle } from "@hono/node-server/vercel"; // Ensure this import is correct for Vercel's runtime
+import app from "./app"; // Ensure this is correctly exporting the Hono app
 
-Bun.serve({
-  fetch: handler.fetch,
-});
+// Create the handler for Vercel
+const handler = handle(app);
 
-console.log("Server is Running");
+// Export the handler for Vercel to use
+export default handler;

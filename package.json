@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.ts",
-    "dev": "nodemon server/index.ts"
+    "dev": "ts-node server/index.ts"
   },
   "devDependencies": {
     "@types/node": "latest",
@@ -15,6 +15,7 @@
     "@hono/zod-validator": "^0.2.2",
     "expense-inventroy-app": "file:",
     "hono": "^4.5.3",
+    "ts-node": "^10.9.2",
     "zod": "^3.23.8"
   }
 }
