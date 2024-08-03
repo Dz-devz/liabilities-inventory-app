@@ -1,17 +1,23 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useState } from "react";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="flex justify-center items-center">
-        <button onClick={() => setCount((count) => count + 1)}>Add</button>
-        <button onClick={() => setCount((count) => count - 1)}>Minus</button>
-        <p>count is {count}</p>
-      </div>
-    </>
+    <Card className="w-[550px] m-auto">
+      <CardHeader>
+        <CardTitle>Total Spent</CardTitle>
+        <CardDescription>The total spent</CardDescription>
+      </CardHeader>
+      <CardContent>{count}</CardContent>
+    </Card>
   );
 }
 
