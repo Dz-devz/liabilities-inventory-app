@@ -49,4 +49,12 @@ export const liabilitiesRoute = new Hono()
     const data = await c.req.valid("json");
     dummyData.push({ ...data, id: dummyData.length });
     return c.json(data);
+  })
+  .get("/:id{[0-9]+}", (c) => {
+    const id = Number.parseInt(c.req.param("id"));
+    const specificData = dummyData.find((data) => data.id === id);
+    if (!specificData) {
+      return c.notFound();
+    }
+    return c.json({ specificData });
   });
