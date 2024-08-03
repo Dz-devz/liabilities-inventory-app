@@ -18,13 +18,5 @@
       "src": "/(.*)",
       "dest": "/server/app.ts"
     }
-  ],
-  "functions": {
-    "server/index.ts": {
-      "runtime": "nodejs18.x"
-    },
-    "server/app.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 }
