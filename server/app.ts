@@ -7,9 +7,10 @@ const app = new Hono();
 
 app.use("*", logger());
 
-app.route("/api/liabilities", liabilitiesRoute);
+const apiRoutes = app.basePath("/api").route("/liabilities", liabilitiesRoute);
 
 app.get("*", serveStatic({ root: "./client/dist" }));
 app.get("*", serveStatic({ path: "./client/dist/index.html" }));
 
 export default app;
+export type ApiRoutes = typeof apiRoutes;
