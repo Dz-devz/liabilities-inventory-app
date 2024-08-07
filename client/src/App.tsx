@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { api } from "@/lib/api";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
 
   useEffect(() => {
     async function fetchDrained() {
-      const res = await fetch("/api/liabilities/total-drained");
+      const res = await api.liabilities["total-drained"].$get();
       const data = await res.json();
       setCount(data.total);
     }
