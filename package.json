@@ -7,7 +7,8 @@
     "dev": "bun --watch server/index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -16,6 +17,7 @@
     "@hono/zod-validator": "^0.2.2",
     "expense-inventroy-app": "file:",
     "hono": "^4.5.3",
+    "typescript": "^5.0.0",
     "zod": "^3.23.8"
   }
 }
