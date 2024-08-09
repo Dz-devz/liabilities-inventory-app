@@ -5,20 +5,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { api } from "@/lib/api";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "./lib/api";
+
+async function getTotalDrained() {
+  const res = await api.liabilities["total-drained"].$get();
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+  const data = await res.json();
+  return data;
+}
 
 function App() {
-  const [count, setCount] = useState(0);
+  const { isPending, error, data } = useQuery({
+    queryKey: ["get-total-drained"],
+    queryFn: getTotalDrained,
+  });
 
-  useEffect(() => {
-    async function fetchDrained() {
-      const res = await api.liabilities["total-drained"].$get();
-      const data = await res.json();
-      setCount(data.total);
-    }
-    fetchDrained();
-  }, []);
+  if (error) return "An Error has occured" + error.message;
 
   return (
     <Card className="w-[550px] m-auto">
@@ -26,7 +31,7 @@ function App() {
         <CardTitle>Total Spent</CardTitle>
         <CardDescription>The total spent</CardDescription>
       </CardHeader>
-      <CardContent>{count}</CardContent>
+      <CardContent>{isPending ? "Loading..." : data.total}</CardContent>
     </Card>
   );
 }
