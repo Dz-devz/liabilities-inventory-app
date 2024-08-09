@@ -1,3 +1,5 @@
+import { createFileRoute } from "@tanstack/react-router";
+
 import {
   Card,
   CardContent,
@@ -6,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { api } from "./lib/api";
+import { api } from "../lib/api";
 
 async function getTotalDrained() {
   const res = await api.liabilities["total-drained"].$get();
@@ -17,7 +19,11 @@ async function getTotalDrained() {
   return data;
 }
 
-function App() {
+export const Route = createFileRoute("/")({
+  component: Index,
+});
+
+function Index() {
   const { isPending, error, data } = useQuery({
     queryKey: ["get-total-drained"],
     queryFn: getTotalDrained,
@@ -35,5 +41,3 @@ function App() {
     </Card>
   );
 }
-
-export default App;
