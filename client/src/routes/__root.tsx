@@ -13,6 +13,9 @@ function NavLinks() {
       <Link to="/about" className="[&.active]:font-bold">
         About
       </Link>
+      <Link to="/profile" className="[&.active]:font-bold">
+        Profile
+      </Link>
       <Link to="/liabilities" className="[&.active]:font-bold">
         Liabilities
       </Link>{" "}

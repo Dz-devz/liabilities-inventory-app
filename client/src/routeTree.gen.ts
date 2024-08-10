@@ -11,12 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ProfileImport } from './routes/profile'
 import { Route as LiabilitiesImport } from './routes/liabilities'
 import { Route as CreateLiabilitiesImport } from './routes/create-liabilities'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const ProfileRoute = ProfileImport.update({
+  path: '/profile',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LiabilitiesRoute = LiabilitiesImport.update({
   path: '/liabilities',
@@ -70,6 +76,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiabilitiesImport
       parentRoute: typeof rootRoute
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -80,6 +93,7 @@ export const routeTree = rootRoute.addChildren({
   AboutRoute,
   CreateLiabilitiesRoute,
   LiabilitiesRoute,
+  ProfileRoute,
 })
 
 /* prettier-ignore-end */
@@ -93,7 +107,8 @@ export const routeTree = rootRoute.addChildren({
         "/",
         "/about",
         "/create-liabilities",
-        "/liabilities"
+        "/liabilities",
+        "/profile"
       ]
     },
     "/": {
@@ -107,6 +122,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/liabilities": {
       "filePath": "liabilities.tsx"
+    },
+    "/profile": {
+      "filePath": "profile.tsx"
     }
   }
 }
