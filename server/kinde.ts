@@ -12,7 +12,8 @@ export const kindeClient = createKindeServerClient(
   {
     authDomain: process.env.KINDE_DOMAIN!,
     clientId: process.env.KINDE_CLIENT_ID!,
-    redirectURL: process.env.KINDE_CLIENT_SECRET!,
+    clientSecret: process.env.KINDE_CLIENT_SECRET,
+    redirectURL: process.env.KINDE_REDIRECT_URI!,
     logoutRedirectURL: process.env.KINDE_LOGOUT_REDIRECT_URI!,
   }
 );
