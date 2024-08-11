@@ -6,7 +6,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { api } from "@/lib/api";
 import { useForm } from "@tanstack/react-form";
 
-export const Route = createFileRoute("/create-liabilities")({
+export const Route = createFileRoute("/_authenticated/create-liabilities")({
   component: CreateLiabilities,
 });
 

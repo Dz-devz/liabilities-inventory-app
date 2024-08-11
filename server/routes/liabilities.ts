@@ -1,6 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import z from "zod";
+import { getProfile } from "../kinde";
 
 const liabilitiesSchema = z.object({
   id: z.number().int().positive().min(1),
@@ -44,20 +45,20 @@ const dummyData: Liabilities[] = [
 ];
 
 export const liabilitiesRoute = new Hono()
-  .get("/", (c) => {
+  .get("/", getProfile, (c) => {
     return c.json({ liabilities: dummyData });
   })
-  .post("/", zValidator("json", createSchema), async (c) => {
+  .post("/", getProfile, zValidator("json", createSchema), async (c) => {
     const data = await c.req.valid("json");
     dummyData.push({ ...data, id: dummyData.length });
     c.status(201);
     return c.json(data);
   })
-  .get("/total-drained", (c) => {
+  .get("/total-drained", getProfile, (c) => {
     const total = dummyData.reduce((acc, data) => acc + data.amount, 0);
     return c.json({ total });
   })
-  .get("/:id{[0-9]+}", (c) => {
+  .get("/:id{[0-9]+}", getProfile, (c) => {
     const id = Number.parseInt(c.req.param("id"));
     const specificData = dummyData.find((data) => data.id === id);
     if (!specificData) {
@@ -65,7 +66,7 @@ export const liabilitiesRoute = new Hono()
     }
     return c.json({ specificData });
   })
-  .delete("/:id{[0-9]+}", (c) => {
+  .delete("/:id{[0-9]+}", getProfile, (c) => {
     const id = Number.parseInt(c.req.param("id"));
     const indexData = dummyData.findIndex((data) => data.id === id);
     if (indexData === 0) {

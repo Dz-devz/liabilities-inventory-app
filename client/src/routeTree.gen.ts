@@ -11,48 +11,55 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as ProfileImport } from './routes/profile'
-import { Route as LiabilitiesImport } from './routes/liabilities'
-import { Route as CreateLiabilitiesImport } from './routes/create-liabilities'
 import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedLiabilitiesImport } from './routes/_authenticated/liabilities'
+import { Route as AuthenticatedCreateLiabilitiesImport } from './routes/_authenticated/create-liabilities'
 
 // Create/Update Routes
-
-const ProfileRoute = ProfileImport.update({
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LiabilitiesRoute = LiabilitiesImport.update({
-  path: '/liabilities',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CreateLiabilitiesRoute = CreateLiabilitiesImport.update({
-  path: '/create-liabilities',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AboutRoute = AboutImport.update({
   path: '/about',
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
-  path: '/',
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRoute,
 } as any)
+
+const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
+  path: '/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedLiabilitiesRoute = AuthenticatedLiabilitiesImport.update({
+  path: '/liabilities',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedCreateLiabilitiesRoute =
+  AuthenticatedCreateLiabilitiesImport.update({
+    path: '/create-liabilities',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -62,26 +69,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/create-liabilities': {
-      id: '/create-liabilities'
+    '/_authenticated/create-liabilities': {
+      id: '/_authenticated/create-liabilities'
       path: '/create-liabilities'
       fullPath: '/create-liabilities'
-      preLoaderRoute: typeof CreateLiabilitiesImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedCreateLiabilitiesImport
+      parentRoute: typeof AuthenticatedImport
     }
-    '/liabilities': {
-      id: '/liabilities'
+    '/_authenticated/liabilities': {
+      id: '/_authenticated/liabilities'
       path: '/liabilities'
       fullPath: '/liabilities'
-      preLoaderRoute: typeof LiabilitiesImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedLiabilitiesImport
+      parentRoute: typeof AuthenticatedImport
     }
-    '/profile': {
-      id: '/profile'
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedProfileImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedImport
     }
   }
 }
@@ -89,11 +103,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
-  IndexRoute,
+  AuthenticatedRoute: AuthenticatedRoute.addChildren({
+    AuthenticatedCreateLiabilitiesRoute,
+    AuthenticatedLiabilitiesRoute,
+    AuthenticatedProfileRoute,
+    AuthenticatedIndexRoute,
+  }),
   AboutRoute,
-  CreateLiabilitiesRoute,
-  LiabilitiesRoute,
-  ProfileRoute,
 })
 
 /* prettier-ignore-end */
@@ -104,27 +120,37 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/about",
-        "/create-liabilities",
-        "/liabilities",
-        "/profile"
+        "/_authenticated",
+        "/about"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_authenticated": {
+      "filePath": "_authenticated.tsx",
+      "children": [
+        "/_authenticated/create-liabilities",
+        "/_authenticated/liabilities",
+        "/_authenticated/profile",
+        "/_authenticated/"
+      ]
     },
     "/about": {
       "filePath": "about.tsx"
     },
-    "/create-liabilities": {
-      "filePath": "create-liabilities.tsx"
+    "/_authenticated/create-liabilities": {
+      "filePath": "_authenticated/create-liabilities.tsx",
+      "parent": "/_authenticated"
     },
-    "/liabilities": {
-      "filePath": "liabilities.tsx"
+    "/_authenticated/liabilities": {
+      "filePath": "_authenticated/liabilities.tsx",
+      "parent": "/_authenticated"
     },
-    "/profile": {
-      "filePath": "profile.tsx"
+    "/_authenticated/profile": {
+      "filePath": "_authenticated/profile.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/": {
+      "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
     }
   }
 }
