@@ -1,61 +1,77 @@
 import { zValidator } from "@hono/zod-validator";
+import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import z from "zod";
+import { db } from "../db";
+import { liabilities as liabilitiesTable } from "../db/schema/liabilities";
 import { getProfile } from "../kinde";
 
 const liabilitiesSchema = z.object({
   id: z.number().int().positive().min(1),
   title: z.string().min(2).max(50),
-  amount: z.number().int().positive(),
+  amount: z.string(),
 });
 
 type Liabilities = z.infer<typeof liabilitiesSchema>;
 
-const createSchema = z.object({
-  title: z.string().min(2).max(50),
-  amount: z.number().int().positive(),
-});
+const createSchema = liabilitiesSchema.omit({ id: true });
 
 const dummyData: Liabilities[] = [
   {
     id: 1,
     title: "Food",
-    amount: 200,
+    amount: "200",
   },
   {
     id: 2,
     title: "Commute",
-    amount: 100,
+    amount: "100",
   },
   {
     id: 3,
     title: "Internet",
-    amount: 800,
+    amount: "800",
   },
   {
     id: 4,
     title: "Medical",
-    amount: 500,
+    amount: "500",
   },
   {
     id: 5,
     title: "Etc",
-    amount: 1000,
+    amount: "1000",
   },
 ];
 
 export const liabilitiesRoute = new Hono()
-  .get("/", getProfile, (c) => {
-    return c.json({ liabilities: dummyData });
+  .get("/", getProfile, async (c) => {
+    const user = c.var.user;
+
+    const liabilities = await db
+      .select()
+      .from(liabilitiesTable)
+      .where(eq(liabilitiesTable.userId, user.id));
+
+    return c.json({ liabilities: liabilities });
   })
   .post("/", getProfile, zValidator("json", createSchema), async (c) => {
     const data = await c.req.valid("json");
-    dummyData.push({ ...data, id: dummyData.length });
+    const user = c.var.user;
+
+    const result = await db
+      .insert(liabilitiesTable)
+      .values({
+        ...data,
+        userId: user.id,
+      })
+      .returning();
+
     c.status(201);
     return c.json(data);
   })
   .get("/total-drained", getProfile, (c) => {
-    const total = dummyData.reduce((acc, data) => acc + data.amount, 0);
+    const total = dummyData.reduce((acc, data) => acc + +data.amount, 0);
     return c.json({ total });
   })
   .get("/:id{[0-9]+}", getProfile, (c) => {
