@@ -2,7 +2,10 @@ import { zValidator } from "@hono/zod-validator";
 import { and, desc, eq, sum } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../db";
-import { liabilities as liabilitiesTable } from "../db/schema/liabilities";
+import {
+  insertLiabilitiesSchema,
+  liabilities as liabilitiesTable,
+} from "../db/schema/liabilities";
 import { getProfile } from "../kinde";
 import { createSchema } from "../types";
 
@@ -23,12 +26,14 @@ export const liabilitiesRoute = new Hono()
     const data = await c.req.valid("json");
     const user = c.var.user;
 
+    const validatedLiability = insertLiabilitiesSchema.parse({
+      ...data,
+      userId: user.id,
+    });
+
     const result = await db
       .insert(liabilitiesTable)
-      .values({
-        ...data,
-        userId: user.id,
-      })
+      .values(validatedLiability)
       .returning()
       .then((res) => res[0]);
 
