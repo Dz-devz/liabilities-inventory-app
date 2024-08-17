@@ -20,6 +20,7 @@
     "@hono/zod-validator": "^0.2.2",
     "@kinde-oss/kinde-typescript-sdk": "^2.9.1",
     "drizzle-orm": "^0.33.0",
+    "drizzle-zod": "^0.5.1",
     "expense-inventroy-app": "file:",
     "hono": "^4.5.3",
     "pg": "^8.12.0",
