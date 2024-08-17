@@ -7,6 +7,7 @@ import { zodValidator } from "@tanstack/zod-form-adapter";
 import { api } from "@/lib/api";
 import { useForm } from "@tanstack/react-form";
 
+import { Calendar } from "@/components/ui/calendar";
 import { liabilitiesSchema } from "@server/types";
 
 export const Route = createFileRoute("/_authenticated/create-liabilities")({
@@ -88,6 +89,25 @@ function CreateLiabilities() {
                 <em>{field.state.meta.errors.join(", ")}</em>
               ) : null}
             </>
+          )}
+        />
+        <form.Field
+          name="date"
+          validators={{
+            onChange: liabilitiesSchema.shape.date,
+          }}
+          children={(field) => (
+            <div className="self-center">
+              <Calendar
+                mode="single"
+                selected={field.state.value}
+                onSelect={(e) => field.handleChange(e.target.value)}
+                className="rounded-md border"
+              />
+              {field.state.meta.isTouched && field.state.meta.errors.length ? (
+                <em>{field.state.meta.errors.join(", ")}</em>
+              ) : null}
+            </div>
           )}
         />
         <form.Subscribe
