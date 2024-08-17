@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import z from "zod";
 import { db } from "../db";
@@ -16,34 +16,6 @@ type Liabilities = z.infer<typeof liabilitiesSchema>;
 
 const createSchema = liabilitiesSchema.omit({ id: true });
 
-const dummyData: Liabilities[] = [
-  {
-    id: 1,
-    title: "Food",
-    amount: "200",
-  },
-  {
-    id: 2,
-    title: "Commute",
-    amount: "100",
-  },
-  {
-    id: 3,
-    title: "Internet",
-    amount: "800",
-  },
-  {
-    id: 4,
-    title: "Medical",
-    amount: "500",
-  },
-  {
-    id: 5,
-    title: "Etc",
-    amount: "1000",
-  },
-];
-
 export const liabilitiesRoute = new Hono()
   .get("/", getProfile, async (c) => {
     const user = c.var.user;
@@ -51,7 +23,9 @@ export const liabilitiesRoute = new Hono()
     const liabilities = await db
       .select()
       .from(liabilitiesTable)
-      .where(eq(liabilitiesTable.userId, user.id));
+      .where(eq(liabilitiesTable.userId, user.id))
+      .orderBy(desc(liabilitiesTable.createdAt))
+      .limit(100);
 
     return c.json({ liabilities: liabilities });
   })
@@ -68,7 +42,7 @@ export const liabilitiesRoute = new Hono()
       .returning();
 
     c.status(201);
-    return c.json(data);
+    return c.json(result);
   })
   .get("/total-drained", getProfile, (c) => {
     const total = dummyData.reduce((acc, data) => acc + +data.amount, 0);
