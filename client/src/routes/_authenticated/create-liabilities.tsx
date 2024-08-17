@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-form-adapter";
+import { z } from "zod";
 
 import { api } from "@/lib/api";
 import { useForm } from "@tanstack/react-form";
@@ -13,6 +15,7 @@ export const Route = createFileRoute("/_authenticated/create-liabilities")({
 function CreateLiabilities() {
   const navigate = useNavigate();
   const form = useForm({
+    validatorAdapter: zodValidator(),
     defaultValues: {
       title: "",
       amount: "0",
@@ -29,7 +32,6 @@ function CreateLiabilities() {
 
   return (
     <div className="p-2">
-      <h2>Create Liabilities</h2>
       <form
         className="max-w-sm m-auto"
         onSubmit={(e) => {
@@ -40,6 +42,11 @@ function CreateLiabilities() {
       >
         <form.Field
           name="title"
+          validators={{
+            onChange: z
+              .string()
+              .min(2, { message: "Title must be at least 2 characters" }),
+          }}
           children={(field) => (
             <>
               <Label htmlFor={field.name}>Title</Label>
