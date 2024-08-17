@@ -7,7 +7,7 @@ import {
   liabilities as liabilitiesTable,
 } from "../db/schema/liabilities";
 import { getProfile } from "../kinde";
-import { createSchema } from "../types";
+import { liabilitiesSchema } from "../types";
 
 export const liabilitiesRoute = new Hono()
   .get("/", getProfile, async (c) => {
@@ -22,7 +22,7 @@ export const liabilitiesRoute = new Hono()
 
     return c.json({ liabilities: liabilities });
   })
-  .post("/", getProfile, zValidator("json", createSchema), async (c) => {
+  .post("/", getProfile, zValidator("json", liabilitiesSchema), async (c) => {
     const data = await c.req.valid("json");
     const user = c.var.user;
 

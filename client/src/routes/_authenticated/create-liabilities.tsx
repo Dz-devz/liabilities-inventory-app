@@ -7,7 +7,7 @@ import { zodValidator } from "@tanstack/zod-form-adapter";
 import { api } from "@/lib/api";
 import { useForm } from "@tanstack/react-form";
 
-import { createSchema } from "@server/types";
+import { liabilitiesSchema } from "@server/types";
 
 export const Route = createFileRoute("/_authenticated/create-liabilities")({
   component: CreateLiabilities,
@@ -44,7 +44,7 @@ function CreateLiabilities() {
         <form.Field
           name="title"
           validators={{
-            onChange: createSchema.shape.title,
+            onChange: liabilitiesSchema.shape.title,
           }}
           children={(field) => (
             <>
@@ -70,7 +70,7 @@ function CreateLiabilities() {
         <form.Field
           name="amount"
           validators={{
-            onChange: createSchema.shape.amount,
+            onChange: liabilitiesSchema.shape.amount,
           }}
           children={(field) => (
             <>
