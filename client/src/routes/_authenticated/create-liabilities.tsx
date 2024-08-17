@@ -69,6 +69,9 @@ function CreateLiabilities() {
         />
         <form.Field
           name="amount"
+          validators={{
+            onChange: createSchema.shape.amount,
+          }}
           children={(field) => (
             <>
               <Label htmlFor={field.name}>Amount</Label>
