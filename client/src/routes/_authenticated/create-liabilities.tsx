@@ -43,9 +43,9 @@ function CreateLiabilities() {
         <form.Field
           name="title"
           validators={{
-            onChange: z
-              .string()
-              .min(2, { message: "Title must be at least 2 characters" }),
+            onChange: z.string().min(2, {
+              message: "Title must be at least 2 characters. <br/>",
+            }),
           }}
           children={(field) => (
             <>
@@ -58,7 +58,12 @@ function CreateLiabilities() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.isTouched && field.state.meta.errors.length ? (
-                <em>{field.state.meta.errors.join(", ")}</em>
+                // <em>{field.state.meta.errors.join(", ")}</em>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: field.state.meta.errors.join("<br />"),
+                  }}
+                />
               ) : null}
             </>
           )}
