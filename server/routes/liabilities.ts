@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, sum } from "drizzle-orm";
 import { Hono } from "hono";
 import z from "zod";
 import { db } from "../db";
@@ -39,29 +39,51 @@ export const liabilitiesRoute = new Hono()
         ...data,
         userId: user.id,
       })
-      .returning();
+      .returning()
+      .then((res) => res[0]);
 
     c.status(201);
     return c.json(result);
   })
-  .get("/total-drained", getProfile, (c) => {
-    const total = dummyData.reduce((acc, data) => acc + +data.amount, 0);
-    return c.json({ total });
+  .get("/total-drained", getProfile, async (c) => {
+    const user = c.var.user;
+    const result = await db
+      .select({ total: sum(liabilitiesTable.amount) })
+      .from(liabilitiesTable)
+      .where(eq(liabilitiesTable.userId, user.id))
+      .limit(1)
+      .then((res) => res[0]);
+    return c.json(result);
   })
-  .get("/:id{[0-9]+}", getProfile, (c) => {
+  .get("/:id{[0-9]+}", getProfile, async (c) => {
     const id = Number.parseInt(c.req.param("id"));
-    const specificData = dummyData.find((data) => data.id === id);
+    const user = c.var.user;
+    const specificData = await db
+      .select()
+      .from(liabilitiesTable)
+      .where(
+        and(eq(liabilitiesTable.userId, user.id), eq(liabilitiesTable.id, id))
+      )
+      .then((res) => res[0]);
     if (!specificData) {
       return c.notFound();
     }
     return c.json({ specificData });
   })
-  .delete("/:id{[0-9]+}", getProfile, (c) => {
+  .delete("/:id{[0-9]+}", getProfile, async (c) => {
     const id = Number.parseInt(c.req.param("id"));
-    const indexData = dummyData.findIndex((data) => data.id === id);
-    if (indexData === 0) {
+    const user = c.var.user;
+
+    const indexData = await db
+      .delete(liabilitiesTable)
+      .where(
+        and(eq(liabilitiesTable.userId, user.id), eq(liabilitiesTable.id, id))
+      )
+      .returning()
+      .then((res) => res[0]);
+
+    if (!indexData) {
       return c.notFound();
     }
-    const deletedData = dummyData.splice(indexData, 1)[0];
-    return c.json({ data: deletedData });
+    return c.json({ indexData: indexData });
   });
