@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { db } from "../db";
 import { liabilities as liabilitiesTable } from "../db/schema/liabilities";
 import { getProfile } from "../kinde";
+import { createSchema } from "../types";
 
 export const liabilitiesRoute = new Hono()
   .get("/", getProfile, async (c) => {

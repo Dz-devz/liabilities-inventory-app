@@ -3,10 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { z } from "zod";
 
 import { api } from "@/lib/api";
 import { useForm } from "@tanstack/react-form";
+
+import { createSchema } from "@server/types";
 
 export const Route = createFileRoute("/_authenticated/create-liabilities")({
   component: CreateLiabilities,
@@ -43,9 +44,7 @@ function CreateLiabilities() {
         <form.Field
           name="title"
           validators={{
-            onChange: z.string().min(2, {
-              message: "Title must be at least 2 characters. <br/>",
-            }),
+            onChange: createSchema.shape.title,
           }}
           children={(field) => (
             <>
