@@ -1,20 +1,9 @@
 import { zValidator } from "@hono/zod-validator";
 import { and, desc, eq, sum } from "drizzle-orm";
 import { Hono } from "hono";
-import z from "zod";
 import { db } from "../db";
 import { liabilities as liabilitiesTable } from "../db/schema/liabilities";
 import { getProfile } from "../kinde";
-
-const liabilitiesSchema = z.object({
-  id: z.number().int().positive().min(1),
-  title: z.string().min(2).max(50),
-  amount: z.string(),
-});
-
-type Liabilities = z.infer<typeof liabilitiesSchema>;
-
-const createSchema = liabilitiesSchema.omit({ id: true });
 
 export const liabilitiesRoute = new Hono()
   .get("/", getProfile, async (c) => {
