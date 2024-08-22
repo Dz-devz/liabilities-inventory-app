@@ -15,20 +15,35 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function NavLinks() {
   return (
-    <div className="p-2 flex gap-2">
-      <Link to="/" className="[&.active]:font-bold">
+    <div className="p-4 w-64 flex flex-col gap-2 border-r-[1px] border-gray-50 text-[#EEEEEE]">
+      <Link
+        to="/"
+        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+      >
         Home
-      </Link>{" "}
-      <Link to="/about" className="[&.active]:font-bold">
+      </Link>
+      <Link
+        to="/about"
+        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+      >
         About
       </Link>
-      <Link to="/profile" className="[&.active]:font-bold">
+      <Link
+        to="/profile"
+        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+      >
         Profile
       </Link>
-      <Link to="/liabilities" className="[&.active]:font-bold">
+      <Link
+        to="/liabilities"
+        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+      >
         Liabilities
-      </Link>{" "}
-      <Link to="/create-liabilities" className="[&.active]:font-bold">
+      </Link>
+      <Link
+        to="/create-liabilities"
+        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+      >
         Create Liabilities
       </Link>
     </div>
@@ -37,11 +52,13 @@ function NavLinks() {
 
 function Root() {
   return (
-    <>
+    <div className="flex min-h-screen">
       <NavLinks />
       <hr />
-      <Outlet />
+      <div className="mx-auto p-4">
+        <Outlet />
+      </div>
       {/* <TanStackRouterDevtools /> */}
-    </>
+    </div>
   );
 }
