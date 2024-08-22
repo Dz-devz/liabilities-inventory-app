@@ -16,7 +16,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function NavLinks() {
   return (
-    <div className="p-4 w-64 flex flex-col gap-2 border-r-[1px] border-gray-50 text-[#EEEEEE]">
+    <div className="p-4 w-48 flex flex-col gap-2 border-r-[1px] border-gray-50 text-[#EEEEEE]">
       <Link
         to="/"
         className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
