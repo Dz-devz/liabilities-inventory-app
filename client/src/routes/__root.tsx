@@ -1,3 +1,4 @@
+import Footer from "@/components/ui/footer";
 import { type QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
@@ -59,6 +60,7 @@ function Root() {
         <Outlet />
       </div>
       {/* <TanStackRouterDevtools /> */}
+      <Footer />
     </div>
   );
 }
