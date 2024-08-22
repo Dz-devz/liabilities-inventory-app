@@ -53,13 +53,14 @@ function NavLinks() {
 
 function Root() {
   return (
-    <div className="flex min-h-screen">
-      <NavLinks />
-      <hr />
-      <div className="mx-auto p-4">
-        <Outlet />
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-grow">
+        <NavLinks />
+        <hr />
+        <div className="flex-1 p-4">
+          <Outlet />
+        </div>
       </div>
-      {/* <TanStackRouterDevtools /> */}
       <Footer />
     </div>
   );
