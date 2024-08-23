@@ -8,7 +8,7 @@ function About() {
   return (
     <div className="flex justify-center items-center">
       <div className="about-section p-6 shadow-md rounded-lg max-w-xl mx-auto">
-        <h2 className="text-2xl font-bold mb-4 text-center text-[#04FA04]">
+        <h2 className="text-2xl font-bold mb-4 text-center text-[#3f4f5d]">
           About This App
         </h2>
         <p className="mb-4">

@@ -16,34 +16,34 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function NavLinks() {
   return (
-    <div className="p-4 w-48 flex flex-col gap-2 border-r-[1px] border-gray-50 text-[#EEEEEE]">
+    <div className="p-4 w-48 flex flex-col gap-2 bg-[#3f4f5d]  text-[#f2f4f6]">
       <Link
         to="/"
-        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
       >
         Home
       </Link>
       <Link
         to="/about"
-        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
       >
         About
       </Link>
       <Link
         to="/profile"
-        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
       >
         Profile
       </Link>
       <Link
         to="/liabilities"
-        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
       >
         Liabilities
       </Link>
       <Link
         to="/create-liabilities"
-        className="block py-2 px-3 rounded hover:bg-[#04FA04] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
       >
         Create Liabilities
       </Link>
@@ -53,7 +53,7 @@ function NavLinks() {
 
 function Root() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#728aa0]">
       <div className="flex flex-grow">
         <NavLinks />
         <hr />
