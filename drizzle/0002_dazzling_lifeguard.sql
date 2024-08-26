@@ -1,0 +1,1 @@
+ALTER TABLE "liabilities" ADD COLUMN "date" date NOT NULL;
