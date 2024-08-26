@@ -21,6 +21,7 @@ function CreateLiabilities() {
     defaultValues: {
       title: "",
       amount: "0",
+      date: new Date().toISOString(),
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -100,8 +101,10 @@ function CreateLiabilities() {
             <div className="self-center">
               <Calendar
                 mode="single"
-                selected={field.state.value}
-                onSelect={(e) => field.handleChange(e.target.value)}
+                selected={new Date(field.state.value)}
+                onSelect={(date) =>
+                  field.handleChange((date ?? new Date()).toISOString())
+                }
                 className="rounded-md border"
               />
               {field.state.meta.isTouched && field.state.meta.errors.length ? (

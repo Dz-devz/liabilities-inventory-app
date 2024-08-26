@@ -1,4 +1,5 @@
 import {
+  date,
   index,
   numeric,
   pgTable,
@@ -16,6 +17,7 @@ export const liabilities = pgTable(
     userId: text("user_id").notNull(),
     title: text("title").notNull(),
     amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
+    date: date("date").notNull(),
     createdAt: timestamp("created_at").defaultNow(),
   },
   (liabilities) => {
