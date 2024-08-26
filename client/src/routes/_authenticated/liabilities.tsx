@@ -43,6 +43,7 @@ function Liabilities() {
             <TableHead className="w-[100px]">Id</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Amount</TableHead>
+            <TableHead>Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -60,6 +61,9 @@ function Liabilities() {
                     <TableCell>
                       <Skeleton className="h-4" />
                     </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4" />
+                    </TableCell>
                   </TableRow>
                 ))
             : data?.liabilities.map((liability) => (
@@ -67,6 +71,7 @@ function Liabilities() {
                   <TableCell className="font-medium">{liability.id}</TableCell>
                   <TableCell>{liability.title}</TableCell>
                   <TableCell>{liability.amount}</TableCell>
+                  <TableCell>{liability.date.split("T")[0]}</TableCell>
                 </TableRow>
               ))}
         </TableBody>
