@@ -4,6 +4,7 @@ import {
   TableBody,
   TableCaption,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -27,12 +28,34 @@ async function getAllDrained() {
 }
 
 function Liabilities() {
-  const { isPending, error, data } = useQuery({
+  const {
+    isPending: isPendingLiabilities,
+    error: errorLiabilities,
+    data: liabilitiesData,
+  } = useQuery({
     queryKey: ["get-all-liabilities"],
     queryFn: getAllDrained,
   });
+  const {
+    isPending: isPendingTotal,
+    error: errorTotal,
+    data: totalDrainedData,
+  } = useQuery({
+    queryKey: ["get-total-drained"],
+    queryFn: getTotalDrained,
+  });
 
-  if (error) return "An Error has occured" + error.message;
+  if (errorLiabilities || errorTotal)
+    return "An Error has occured" + errorLiabilities?.message || errorTotal;
+
+  async function getTotalDrained() {
+    const res = await api.liabilities["total-drained"].$get();
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+    const data = await res.json();
+    return data;
+  }
 
   return (
     <div className="p-2 max-w-4xl m-auto">
@@ -42,12 +65,12 @@ function Liabilities() {
           <TableRow>
             <TableHead className="w-[100px]">Id</TableHead>
             <TableHead>Title</TableHead>
-            <TableHead>Amount</TableHead>
             <TableHead>Date</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isPending
+          {isPendingLiabilities
             ? Array(5)
                 .fill(0)
                 .map((_, i) => (
@@ -66,15 +89,25 @@ function Liabilities() {
                     </TableCell>
                   </TableRow>
                 ))
-            : data?.liabilities.map((liability) => (
+            : liabilitiesData?.liabilities.map((liability) => (
                 <TableRow key={liability.id}>
                   <TableCell className="font-medium">{liability.id}</TableCell>
                   <TableCell>{liability.title}</TableCell>
-                  <TableCell>{liability.amount}</TableCell>
                   <TableCell>{liability.date.split("T")[0]}</TableCell>
+                  <TableCell className="text-right">
+                    {liability.amount}
+                  </TableCell>
                 </TableRow>
               ))}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell className="text-right">
+              {isPendingTotal ? "Loading..." : totalDrainedData.total}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
     </div>
   );
