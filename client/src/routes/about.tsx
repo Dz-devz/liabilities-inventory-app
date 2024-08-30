@@ -7,10 +7,8 @@ export const Route = createFileRoute("/about")({
 function About() {
   return (
     <div className="flex justify-center items-center">
-      <div className="about-section p-6 shadow-md rounded-lg max-w-xl mx-auto">
-        <h2 className="text-2xl font-bold mb-4 text-center text-[#3f4f5d]">
-          About This App
-        </h2>
+      <div className="about-section p-6 bg-popover shadow-md rounded-lg max-w-xl mx-auto text-foreground">
+        <h2 className="text-2xl font-bold mb-4 text-center ">About This App</h2>
         <p className="mb-4">
           Welcome to the Personal Liabilities and Inventory System! This app is
           designed to help you manage and track both your personal liabilities
