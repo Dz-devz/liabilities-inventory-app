@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { api } from "@/lib/api";
+import { drainedQuery, liabilitiesQuery } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
@@ -21,24 +21,6 @@ export const Route = createFileRoute("/_authenticated/liabilities")({
   component: Liabilities,
 });
 
-async function getAllDrained() {
-  const res = await api.liabilities.$get();
-  if (!res.ok) {
-    throw new Error("Server error");
-  }
-  const data = await res.json();
-  return data;
-}
-
-async function getTotalDrained() {
-  const res = await api.liabilities["total-drained"].$get();
-  if (!res.ok) {
-    throw new Error("Server error");
-  }
-  const data = await res.json();
-  return data;
-}
-
 function Liabilities() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
@@ -46,18 +28,12 @@ function Liabilities() {
     isPending: isPendingLiabilities,
     error: errorLiabilities,
     data: liabilitiesData,
-  } = useQuery({
-    queryKey: ["get-all-liabilities"],
-    queryFn: getAllDrained,
-  });
+  } = useQuery(liabilitiesQuery);
   const {
     isPending: isPendingTotal,
     error: errorTotal,
     data: totalDrainedData,
-  } = useQuery({
-    queryKey: ["get-total-drained"],
-    queryFn: getTotalDrained,
-  });
+  } = useQuery(drainedQuery);
 
   if (errorLiabilities || errorTotal)
     return "An Error has occurred" + errorLiabilities?.message || errorTotal;

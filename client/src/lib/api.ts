@@ -20,3 +20,32 @@ export const profileQuery = queryOptions({
   queryFn: getCurrentProfile,
   staleTime: Infinity,
 });
+
+export const liabilitiesQuery = queryOptions({
+  queryKey: ["get-all-liabilities"],
+  queryFn: getAllDrained,
+  staleTime: 60 * 60 * 1000,
+});
+
+export const drainedQuery = queryOptions({
+  queryKey: ["get-total-drained"],
+  queryFn: getTotalDrained,
+});
+
+export async function getAllDrained() {
+  const res = await api.liabilities.$get();
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+  const data = await res.json();
+  return data;
+}
+
+export async function getTotalDrained() {
+  const res = await api.liabilities["total-drained"].$get();
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+  const data = await res.json();
+  return data;
+}
