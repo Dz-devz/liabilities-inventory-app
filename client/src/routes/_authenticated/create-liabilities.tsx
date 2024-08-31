@@ -102,7 +102,7 @@ function CreateLiabilities() {
               <Calendar
                 mode="single"
                 selected={new Date(field.state.value)}
-                onSelect={(date) =>
+                onSelect={(date: Date | null) =>
                   field.handleChange((date ?? new Date()).toISOString())
                 }
                 className="rounded-md border"
