@@ -25,25 +25,25 @@ function NavLinks() {
       </Link>
       <Link
         to="/about"
-        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
       >
         About
       </Link>
       <Link
         to="/profile"
-        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
       >
         Profile
       </Link>
       <Link
         to="/liabilities"
-        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
       >
         Liabilities
       </Link>
       <Link
         to="/create-liabilities"
-        className="block py-2 px-3 rounded hover:bg-[#5e768b] [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
       >
         Create Liabilities
       </Link>
