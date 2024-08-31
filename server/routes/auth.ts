@@ -16,8 +16,8 @@ export const authRoute = new Hono()
     return c.redirect("/");
   })
   .get("/logout", async (c) => {
-    const logoutUrl = await kindeClient.logout(sessionManager(c));
-    return c.redirect(logoutUrl.toString());
+    await kindeClient.logout(sessionManager(c));
+    return c.redirect("/");
   })
   .get("/profile", getProfile, async (c) => {
     const user = c.var.user;

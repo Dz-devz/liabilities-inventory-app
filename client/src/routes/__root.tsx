@@ -5,7 +5,7 @@ import {
   Link,
   Outlet,
 } from "@tanstack/react-router";
-import logo from "../../public/logo-tracknstock.png";
+import logo from "/logo-tracknstock.png";
 
 type MyRouterContext = {
   queryClient: QueryClient;
@@ -49,6 +49,13 @@ function NavLinks() {
       >
         Create Liabilities
       </Link>
+
+      <a
+        className="block py-2 px-3 rounded hover:bg-popover"
+        href="/api/logout"
+      >
+        Logout
+      </a>
     </div>
   );
 }
