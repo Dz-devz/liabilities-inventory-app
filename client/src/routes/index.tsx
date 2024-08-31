@@ -15,7 +15,7 @@ function Index() {
       </p>
 
       <Link
-        href="/create-liabilities"
+        to="/create-liabilities"
         className="mt-8 px-8 py-4 bg-primary text-white font-bold rounded-lg transition duration-300 ease-in-out shadow-md hover:bg-blue-600"
       >
         <span className="text-foreground">Get Started</span>
