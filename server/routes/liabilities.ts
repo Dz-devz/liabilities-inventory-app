@@ -50,21 +50,6 @@ export const liabilitiesRoute = new Hono()
       .then((res) => res[0]);
     return c.json(result);
   })
-  .get("/:id{[0-9]+}", getProfile, async (c) => {
-    const id = Number.parseInt(c.req.param("id"));
-    const user = c.var.user;
-    const specificData = await db
-      .select()
-      .from(liabilitiesTable)
-      .where(
-        and(eq(liabilitiesTable.userId, user.id), eq(liabilitiesTable.id, id))
-      )
-      .then((res) => res[0]);
-    if (!specificData) {
-      return c.notFound();
-    }
-    return c.json({ specificData });
-  })
   .delete("/:id{[0-9]+}", getProfile, async (c) => {
     const id = Number.parseInt(c.req.param("id"));
     const user = c.var.user;

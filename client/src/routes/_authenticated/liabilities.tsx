@@ -20,6 +20,8 @@ export const Route = createFileRoute("/_authenticated/liabilities")({
 
 async function getAllDrained() {
   const res = await api.liabilities.$get();
+  console.log(res);
+
   if (!res.ok) {
     throw new Error("Server error");
   }
