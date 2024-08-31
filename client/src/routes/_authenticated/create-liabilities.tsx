@@ -5,10 +5,19 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 
 import { api } from "@/lib/api";
+import { liabilitiesSchema } from "@server/types";
 import { useForm } from "@tanstack/react-form";
 
+// Shadcn ui
 import { Calendar } from "@/components/ui/calendar";
-import { liabilitiesSchema } from "@server/types";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/create-liabilities")({
   component: CreateLiabilities,
@@ -92,7 +101,7 @@ function CreateLiabilities() {
             </>
           )}
         />
-        <form.Field
+        {/* <form.Field
           name="date"
           validators={{
             onChange: liabilitiesSchema.shape.date,
@@ -102,7 +111,7 @@ function CreateLiabilities() {
               <Calendar
                 mode="single"
                 selected={new Date(field.state.value)}
-                onSelect={(date: Date | null) =>
+                onSelect={(date) =>
                   field.handleChange((date ?? new Date()).toISOString())
                 }
                 className="rounded-md border"
@@ -112,11 +121,59 @@ function CreateLiabilities() {
               ) : null}
             </div>
           )}
-        />
+        /> */}
+
+        <form.Field
+          name="date"
+          validators={{
+            onChange: liabilitiesSchema.shape.date,
+          }}
+        >
+          {(field) => (
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="self-center mt-4">
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-[240px] pl-3 text-left font-normal",
+                      !field.state.value && "text-muted-foreground"
+                    )}
+                  >
+                    {field.state.value ? (
+                      format(new Date(field.state.value), "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={new Date(field.state.value)}
+                  onSelect={(date) =>
+                    field.handleChange((date ?? new Date()).toISOString())
+                  }
+                  disabled={(date) =>
+                    date > new Date() || date < new Date("1900-01-01")
+                  }
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          )}
+        </form.Field>
+
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
-            <Button className="mt-4" type="submit" disabled={!canSubmit}>
+            <Button
+              className="mt-4 text-foreground"
+              type="submit"
+              disabled={!canSubmit}
+            >
               {isSubmitting ? "Loading..." : "Create Liabilities"}
             </Button>
           )}
