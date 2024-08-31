@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { and, desc, eq, sum } from "drizzle-orm";
+import { and, desc, eq, inArray, sum } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../db";
 import {
@@ -66,4 +66,25 @@ export const liabilitiesRoute = new Hono()
       return c.notFound();
     }
     return c.json({ indexData: indexData });
+  })
+  .delete("/", getProfile, async (c) => {
+    const { ids } = await c.req.json();
+    const user = c.var.user;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return c.json({ error: "No IDs provided" }, 400);
+    }
+    const deletedItems = await db
+      .delete(liabilitiesTable)
+      .where(
+        and(
+          eq(liabilitiesTable.userId, user.id),
+          inArray(liabilitiesTable.id, ids)
+        )
+      )
+      .returning();
+    if (deletedItems.length === 0) {
+      return c.json({ error: "No items found for deletion" }, 404);
+    }
+
+    return c.json({ deletedItems });
   });
