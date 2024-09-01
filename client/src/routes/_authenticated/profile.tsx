@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { profileQuery } from "../../lib/api";
@@ -14,6 +15,10 @@ function Profile() {
 
   return (
     <div className="p-2">
+      <Avatar>
+        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+        <AvatarFallback>CN</AvatarFallback>
+      </Avatar>
       <p>{data.user.given_name}</p>
     </div>
   );
