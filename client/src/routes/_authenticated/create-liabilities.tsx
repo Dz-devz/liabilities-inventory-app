@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 
-import { api, liabilitiesQuery } from "@/lib/api";
+import { createLiabilities, liabilitiesQuery } from "@/lib/api";
 import { liabilitiesSchema } from "@server/types";
 import { useForm } from "@tanstack/react-form";
 
@@ -36,12 +36,7 @@ function CreateLiabilities() {
     },
     onSubmit: async ({ value }) => {
       // making sure that it gets the past data before getting the new data to avoid duplication
-
-      const res = await api.liabilities.$post({ json: value });
-      if (!res.ok) {
-        throw new Error("Server Error");
-      }
-      const recentLiabilities = await res.json();
+      const recentLiabilities = await createLiabilities({ value });
       const pastLiabilities =
         await queryClient.ensureQueryData(liabilitiesQuery);
       queryClient.setQueryData(liabilitiesQuery.queryKey, {
