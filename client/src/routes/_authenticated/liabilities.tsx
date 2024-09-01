@@ -124,7 +124,7 @@ function Liabilities() {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell colSpan={3}>Total Liabilities Spent</TableCell>
             <TableCell className="text-right">
               {isPendingTotal ? "Loading..." : totalDrainedData.total}
             </TableCell>

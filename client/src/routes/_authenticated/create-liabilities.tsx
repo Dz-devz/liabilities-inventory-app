@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 
-import { api } from "@/lib/api";
+import { api, liabilitiesQuery } from "@/lib/api";
 import { liabilitiesSchema } from "@server/types";
 import { useForm } from "@tanstack/react-form";
 
@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_authenticated/create-liabilities")({
 });
 
 function CreateLiabilities() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const form = useForm({
     validatorAdapter: zodValidator(),
@@ -38,6 +40,14 @@ function CreateLiabilities() {
       if (!res.ok) {
         throw new Error("Server Error");
       }
+      const newLiabilities = await res.json();
+      const pastLiabilities =
+        await queryClient.ensureQueryData(liabilitiesQuery);
+      queryClient.setQueryData(liabilitiesQuery.queryKey, {
+        ...pastLiabilities,
+        liabilities: [...pastLiabilities.liabilities, newLiabilities],
+      });
+
       navigate({ to: "/liabilities" });
     },
   });
