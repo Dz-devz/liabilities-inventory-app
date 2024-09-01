@@ -35,17 +35,18 @@ function CreateLiabilities() {
       date: new Date().toISOString(),
     },
     onSubmit: async ({ value }) => {
-      // Do something with form data
+      // making sure that it gets the past data before getting the new data to avoid duplication
+
       const res = await api.liabilities.$post({ json: value });
       if (!res.ok) {
         throw new Error("Server Error");
       }
-      const newLiabilities = await res.json();
+      const recentLiabilities = await res.json();
       const pastLiabilities =
         await queryClient.ensureQueryData(liabilitiesQuery);
       queryClient.setQueryData(liabilitiesQuery.queryKey, {
         ...pastLiabilities,
-        liabilities: [...pastLiabilities.liabilities, newLiabilities],
+        liabilities: [recentLiabilities, ...pastLiabilities.liabilities],
       });
 
       navigate({ to: "/liabilities" });
