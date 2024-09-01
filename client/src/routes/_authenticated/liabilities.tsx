@@ -98,7 +98,12 @@ function Liabilities() {
                   </TableRow>
                 ))
             : liabilitiesData?.liabilities.map((liability) => (
-                <TableRow key={liability.id}>
+                <TableRow
+                  key={liability.id}
+                  className={
+                    selectedIds.has(liability.id) ? "bg-slate-800" : ""
+                  }
+                >
                   <TableCell className="font-medium">{liability.id}</TableCell>
                   <TableCell>{liability.title}</TableCell>
                   <TableCell>{liability.date.split("T")[0]}</TableCell>
@@ -108,7 +113,7 @@ function Liabilities() {
                   <TableCell>
                     <Checkbox
                       id={liability.id.toString()}
-                      className="flex ml-[0.8rem]"
+                      className="flex ml-[0.8rem] [&.active]:"
                       onCheckedChange={(isChecked) =>
                         handleCheckboxChange(liability.id, !!isChecked)
                       }

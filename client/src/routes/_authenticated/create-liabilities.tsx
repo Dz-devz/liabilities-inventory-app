@@ -59,7 +59,7 @@ function CreateLiabilities() {
           }}
           children={(field) => (
             <>
-              <Label htmlFor={field.name}>Title</Label>
+              <Label htmlFor={field.name}>Category</Label>
               <Input
                 id={field.name}
                 name={field.name}
