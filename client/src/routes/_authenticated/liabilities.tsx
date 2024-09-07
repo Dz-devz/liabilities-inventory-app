@@ -138,7 +138,10 @@ function Liabilities() {
                   }
                 >
                   <TableCell className="font-medium">{liability.id}</TableCell>
-                  <TableCell onClick={() => handleClickId(liability.id)}>
+                  <TableCell
+                    onClick={() => handleClickId(liability.id)}
+                    className="hover:text-[#e1d6d6] hover:underline"
+                  >
                     {liability.title}
                   </TableCell>
                   <TableCell>{liability.date.split("T")[0]}</TableCell>

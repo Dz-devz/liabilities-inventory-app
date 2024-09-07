@@ -10,7 +10,7 @@ function SingleLiabilities() {
   const { id } = Route.useParams();
   const { data, isLoading, error } = useQuery({
     queryKey: ["get-single-liability", id],
-    queryFn: () => getSingleLiabilities({ id: id }), // Fetch based on selected liability ID
+    queryFn: () => getSingleLiabilities({ id: id }), // Fetch based on selected liability ID on Route.params
     enabled: !!id,
   });
 
@@ -19,6 +19,7 @@ function SingleLiabilities() {
 
   if (!data) return <div>No data found</div>;
 
+  // to ensure getting a single Data
   const liability = data.singleLiabilities[0];
 
   return (
