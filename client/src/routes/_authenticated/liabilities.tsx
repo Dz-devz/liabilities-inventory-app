@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { deleteLiabilities, drainedQuery, liabilitiesQuery } from "@/lib/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -22,7 +22,16 @@ export const Route = createFileRoute("/_authenticated/liabilities")({
 });
 
 function Liabilities() {
+  const navigate = useNavigate({ from: Route.fullPath });
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [selectedLiabilityId, setSelectedLiabilityId] = useState<number | null>(
+    null
+  );
+
+  const handleClickId = (id: number) => {
+    setSelectedLiabilityId(id);
+    navigate({ to: `${id}` });
+  };
 
   const {
     isPending: isPendingLiabilities,
@@ -129,7 +138,9 @@ function Liabilities() {
                   }
                 >
                   <TableCell className="font-medium">{liability.id}</TableCell>
-                  <TableCell>{liability.title}</TableCell>
+                  <TableCell onClick={() => handleClickId(liability.id)}>
+                    {liability.title}
+                  </TableCell>
                   <TableCell>{liability.date.split("T")[0]}</TableCell>
                   <TableCell className="text-right">
                     {liability.amount}

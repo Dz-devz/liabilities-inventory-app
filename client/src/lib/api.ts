@@ -36,6 +36,18 @@ export const drainedQuery = queryOptions({
   queryFn: getTotalDrained,
 });
 
+export async function getSingleLiabilities({ id }: { id: string }) {
+  const res = await api.liabilities[":id{[0-9]+}"].$get({
+    param: { id: id.toString() },
+  });
+
+  if (!res.ok) {
+    throw new Error("Server Error");
+  }
+  const data = await res.json();
+  return data;
+}
+
 export async function getAllDrained() {
   const res = await api.liabilities.$get();
   if (!res.ok) {

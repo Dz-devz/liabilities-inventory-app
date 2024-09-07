@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as IndexImport } from './routes/index'
+import { Route as LiabilitiesIdImport } from './routes/liabilities.$id'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedLiabilitiesImport } from './routes/_authenticated/liabilities'
 import { Route as AuthenticatedCreateLiabilitiesImport } from './routes/_authenticated/create-liabilities'
@@ -32,6 +33,11 @@ const AuthenticatedRoute = AuthenticatedImport.update({
 
 const IndexRoute = IndexImport.update({
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LiabilitiesIdRoute = LiabilitiesIdImport.update({
+  path: '/liabilities/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -97,6 +103,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/liabilities/$id': {
+      id: '/liabilities/$id'
+      path: '/liabilities/$id'
+      fullPath: '/liabilities/$id'
+      preLoaderRoute: typeof LiabilitiesIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -110,6 +123,7 @@ export const routeTree = rootRoute.addChildren({
     AuthenticatedProfileRoute,
   }),
   AboutRoute,
+  LiabilitiesIdRoute,
 })
 
 /* prettier-ignore-end */
@@ -122,7 +136,8 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/_authenticated",
-        "/about"
+        "/about",
+        "/liabilities/$id"
       ]
     },
     "/": {
@@ -150,6 +165,9 @@ export const routeTree = rootRoute.addChildren({
     "/_authenticated/profile": {
       "filePath": "_authenticated/profile.tsx",
       "parent": "/_authenticated"
+    },
+    "/liabilities/$id": {
+      "filePath": "liabilities.$id.tsx"
     }
   }
 }

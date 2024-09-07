@@ -29,7 +29,9 @@ export const liabilitiesRoute = new Hono()
     const singleLiabilities = await db
       .select()
       .from(liabilitiesTable)
-      .where(eq(liabilitiesTable.userId, user.id));
+      .where(
+        and(eq(liabilitiesTable.userId, user.id), eq(liabilitiesTable.id, id))
+      );
 
     return c.json({ singleLiabilities: singleLiabilities });
   })
