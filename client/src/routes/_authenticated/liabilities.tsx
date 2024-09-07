@@ -24,12 +24,8 @@ export const Route = createFileRoute("/_authenticated/liabilities")({
 function Liabilities() {
   const navigate = useNavigate({ from: Route.fullPath });
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-  const [selectedLiabilityId, setSelectedLiabilityId] = useState<number | null>(
-    null
-  );
 
   const handleClickId = (id: number) => {
-    setSelectedLiabilityId(id);
     navigate({ to: `${id}` });
   };
 
