@@ -92,9 +92,14 @@ function Liabilities() {
   }
 
   const isDeleteButtonVisible = selectedIds.size > 0;
-
+  const date: Date = new Date();
   return (
     <div className="p-2 max-w-4xl m-auto">
+      <h1 className="text-2xl text-center mb-2">
+        {date.toLocaleString("default", { month: "long" }) +
+          " " +
+          "Liabilities and Budget"}
+      </h1>
       <Table>
         <TableCaption>A list of all Liabilities</TableCaption>
         <TableHeader>
