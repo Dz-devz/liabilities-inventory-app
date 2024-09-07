@@ -1,0 +1,1 @@
+ALTER TABLE "liabilities" ALTER COLUMN "amount" DROP NOT NULL;

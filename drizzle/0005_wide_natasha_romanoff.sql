@@ -1,0 +1,1 @@
+ALTER TABLE "liabilities" ADD COLUMN "budget" numeric(12, 2);

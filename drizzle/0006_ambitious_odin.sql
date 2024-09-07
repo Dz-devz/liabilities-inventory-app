@@ -1,0 +1,1 @@
+ALTER TABLE "liabilities" DROP COLUMN IF EXISTS "budget";
