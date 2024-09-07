@@ -22,6 +22,17 @@ export const liabilitiesRoute = new Hono()
 
     return c.json({ liabilities: liabilities });
   })
+  .get("/:id{[0-9]+}", getProfile, async (c) => {
+    const user = c.var.user;
+    const id = Number.parseInt(c.req.param("id"));
+
+    const singleLiabilities = await db
+      .select()
+      .from(liabilitiesTable)
+      .where(eq(liabilitiesTable.userId, user.id));
+
+    return c.json({ singleLiabilities: singleLiabilities });
+  })
   .post("/", getProfile, zValidator("json", liabilitiesSchema), async (c) => {
     const data = await c.req.valid("json");
     const user = c.var.user;
