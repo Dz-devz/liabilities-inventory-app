@@ -63,3 +63,15 @@ export async function createLiabilities({
   const recentLiabilities = await res.json();
   return recentLiabilities;
 }
+
+export async function deleteLiabilities(ids: number[]) {
+  const res = await api.liabilities.$delete({
+    json: { ids },
+  });
+
+  if (!res.ok) {
+    throw new Error("server error");
+  }
+
+  return res.json();
+}

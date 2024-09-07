@@ -11,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { drainedQuery, liabilitiesQuery } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
+import { deleteLiabilities, drainedQuery, liabilitiesQuery } from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
 import { useState } from "react";
@@ -50,6 +50,38 @@ function Liabilities() {
     });
   };
 
+  function DeleteLiabilitiesButton() {
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+      mutationFn: deleteLiabilities,
+      onError: () => {
+        throw Error("Failed to delete Liabilities");
+      },
+      onSuccess: () => {
+        // Reload page after successfully deleting data
+        queryClient.invalidateQueries(liabilitiesQuery);
+        queryClient.invalidateQueries(drainedQuery);
+      },
+    });
+    const handleDelete = () => {
+      if (selectedIds.size === 0) return;
+      mutation.mutate(Array.from(selectedIds));
+    };
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        disabled={mutation.isPending}
+        style={{
+          visibility: isDeleteButtonVisible ? "visible" : "hidden",
+        }}
+        onClick={handleDelete}
+      >
+        {mutation.isPending ? "..." : <TrashIcon className="h-4 w-4" />}
+      </Button>
+    );
+  }
+
   const isDeleteButtonVisible = selectedIds.size > 0;
 
   return (
@@ -64,15 +96,7 @@ function Liabilities() {
             <TableHead className="text-right">Amount</TableHead>
             <TableHead className="w-[50px]">
               <div className="flex justify-center">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  style={{
-                    visibility: isDeleteButtonVisible ? "visible" : "hidden",
-                  }}
-                >
-                  <TrashIcon className="h-4 w-4" />
-                </Button>
+                <DeleteLiabilitiesButton />
               </div>
             </TableHead>
           </TableRow>
