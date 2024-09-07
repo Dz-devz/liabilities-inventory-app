@@ -3,6 +3,9 @@ import { CreateLiabilities } from "@server/types";
 import { queryOptions } from "@tanstack/react-query";
 import { hc } from "hono/client";
 
+// where you can call all api in the server using hono/client
+// also all the queries
+
 const client = hc<ApiRoutes>("/");
 
 export const api = client.api;

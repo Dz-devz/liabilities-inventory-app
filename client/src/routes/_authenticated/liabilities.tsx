@@ -91,7 +91,7 @@ function Liabilities() {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Id</TableHead>
-            <TableHead>Title</TableHead>
+            <TableHead>Category</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="text-right">Amount</TableHead>
             <TableHead className="w-[50px]">
