@@ -115,16 +115,101 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexRoute,
-  AuthenticatedRoute: AuthenticatedRoute.addChildren({
-    AuthenticatedCreateLiabilitiesRoute,
-    AuthenticatedLiabilitiesRoute,
-    AuthenticatedProfileRoute,
-  }),
-  AboutRoute,
-  LiabilitiesIdRoute,
-})
+interface AuthenticatedRouteChildren {
+  AuthenticatedCreateLiabilitiesRoute: typeof AuthenticatedCreateLiabilitiesRoute
+  AuthenticatedLiabilitiesRoute: typeof AuthenticatedLiabilitiesRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCreateLiabilitiesRoute: AuthenticatedCreateLiabilitiesRoute,
+  AuthenticatedLiabilitiesRoute: AuthenticatedLiabilitiesRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '': typeof AuthenticatedRouteWithChildren
+  '/about': typeof AboutRoute
+  '/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
+  '/liabilities': typeof AuthenticatedLiabilitiesRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/liabilities/$id': typeof LiabilitiesIdRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '': typeof AuthenticatedRouteWithChildren
+  '/about': typeof AboutRoute
+  '/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
+  '/liabilities': typeof AuthenticatedLiabilitiesRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/liabilities/$id': typeof LiabilitiesIdRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/about': typeof AboutRoute
+  '/_authenticated/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
+  '/_authenticated/liabilities': typeof AuthenticatedLiabilitiesRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/liabilities/$id': typeof LiabilitiesIdRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | ''
+    | '/about'
+    | '/create-liabilities'
+    | '/liabilities'
+    | '/profile'
+    | '/liabilities/$id'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | ''
+    | '/about'
+    | '/create-liabilities'
+    | '/liabilities'
+    | '/profile'
+    | '/liabilities/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/about'
+    | '/_authenticated/create-liabilities'
+    | '/_authenticated/liabilities'
+    | '/_authenticated/profile'
+    | '/liabilities/$id'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  LiabilitiesIdRoute: typeof LiabilitiesIdRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AboutRoute: AboutRoute,
+  LiabilitiesIdRoute: LiabilitiesIdRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 

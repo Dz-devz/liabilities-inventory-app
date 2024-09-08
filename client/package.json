@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
+    "@kinde-oss/kinde-auth-pkce-js": "^4.2.0",
+    "@kinde-oss/kinde-auth-react": "^4.0.2",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-label": "^2.1.0",
@@ -27,6 +29,7 @@
     "client": "file:",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "drizzle-zod": "^0.5.1",
     "lucide-react": "^0.436.0",
     "react": "^18.3.1",
     "react-day-picker": "8.10.1",
@@ -39,7 +42,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/react": "^18.3.3",
+    "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",

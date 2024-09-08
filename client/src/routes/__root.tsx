@@ -1,3 +1,4 @@
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { type QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
@@ -15,6 +16,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function NavLinks() {
+  const { isAuthenticated } = useKindeAuth();
+
   return (
     <div className="p-4 w-48 flex flex-col gap-2 border-r-2 border-border bg-secondary text-[#f2f4f6]">
       <img src={logo} className="w-[60px] h-[60px]" />
@@ -48,13 +51,21 @@ function NavLinks() {
       >
         Create Liabilities
       </Link>
-      {}
-      <a
-        className="block py-2 px-3 rounded hover:bg-popover"
-        href="/api/logout"
-      >
-        Logout
-      </a>
+      {!isAuthenticated ? (
+        <a
+          className="block py-2 px-3 rounded hover:bg-popover"
+          href="/api/register"
+        >
+          Sign up
+        </a>
+      ) : (
+        <a
+          className="block py-2 px-3 rounded hover:bg-popover"
+          href="/api/logout"
+        >
+          Logout
+        </a>
+      )}
     </div>
   );
 }
