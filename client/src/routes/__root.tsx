@@ -48,7 +48,7 @@ function NavLinks() {
       >
         Create Liabilities
       </Link>
-
+      {}
       <a
         className="block py-2 px-3 rounded hover:bg-popover"
         href="/api/logout"
