@@ -1,5 +1,5 @@
 import { type ApiRoutes } from "@server/app";
-import { CreateLiabilities } from "@server/types";
+import { CreateBudget, CreateLiabilities } from "@server/types";
 import { queryOptions } from "@tanstack/react-query";
 import { hc } from "hono/client";
 
@@ -87,6 +87,15 @@ export async function createLiabilities({
   value: CreateLiabilities;
 }) {
   const res = await api.liabilities.$post({ json: value });
+  if (!res.ok) {
+    throw new Error("Server Error");
+  }
+  const recentLiabilities = await res.json();
+  return recentLiabilities;
+}
+
+export async function createBudget({ value }: { value: CreateBudget }) {
+  const res = await api.budget.$post({ json: value });
   if (!res.ok) {
     throw new Error("Server Error");
   }

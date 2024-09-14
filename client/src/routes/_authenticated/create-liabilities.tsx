@@ -107,28 +107,6 @@ function CreateLiabilities() {
             </>
           )}
         />
-        {/* <form.Field
-          name="date"
-          validators={{
-            onChange: liabilitiesSchema.shape.date,
-          }}
-          children={(field) => (
-            <div className="self-center">
-              <Calendar
-                mode="single"
-                selected={new Date(field.state.value)}
-                onSelect={(date) =>
-                  field.handleChange((date ?? new Date()).toISOString())
-                }
-                className="rounded-md border"
-              />
-              {field.state.meta.isTouched && field.state.meta.errors.length ? (
-                <em>{field.state.meta.errors.join(", ")}</em>
-              ) : null}
-            </div>
-          )}
-        /> */}
-
         <form.Field
           name="date"
           validators={{
