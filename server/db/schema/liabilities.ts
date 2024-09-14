@@ -27,6 +27,23 @@ export const liabilities = pgTable(
   }
 );
 
+export const budget = pgTable(
+  "budget",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    limit: numeric("limit", { precision: 12, scale: 2 }).notNull(),
+    startDate: date("start_date").notNull(),
+    endDate: date("end_date").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (budget) => {
+    return {
+      userIdIndex: index("user_id_idx").on(budget.userId),
+    };
+  }
+);
+
 // Schema for inserting a user - can be used to validate API requests
 export const insertLiabilitiesSchema = createInsertSchema(liabilities, {
   title: z.string().min(2, { message: "Title must be at least 2 characters" }),
