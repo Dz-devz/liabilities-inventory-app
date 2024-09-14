@@ -54,16 +54,16 @@ function NavLinks() {
       {!isAuthenticated ? (
         <a
           className="block py-2 px-3 rounded hover:bg-popover"
-          href="/api/register"
+          href="/api/logout"
         >
-          Sign up
+          Logout
         </a>
       ) : (
         <a
           className="block py-2 px-3 rounded hover:bg-popover"
-          href="/api/logout"
+          href="/api/register"
         >
-          Logout
+          Sign up
         </a>
       )}
     </div>
