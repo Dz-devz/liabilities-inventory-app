@@ -11,7 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { deleteLiabilities, drainedQuery, liabilitiesQuery } from "@/lib/api";
+import {
+  budgetQuery,
+  deleteLiabilities,
+  drainedQuery,
+  liabilitiesQuery,
+} from "@/lib/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
@@ -39,8 +44,13 @@ function Liabilities() {
     error: errorTotal,
     data: totalDrainedData,
   } = useQuery(drainedQuery);
+  const {
+    isPending: isPendingBudget,
+    error: errorBudget,
+    data: getBudget,
+  } = useQuery(budgetQuery);
 
-  if (errorLiabilities || errorTotal)
+  if (errorLiabilities || errorTotal || errorBudget)
     return "An Error has occurred" + errorLiabilities?.message || errorTotal;
 
   const handleCheckboxChange = (id: number, isChecked: boolean) => {
@@ -66,6 +76,7 @@ function Liabilities() {
         // Reload page after successfully deleting data
         queryClient.invalidateQueries(liabilitiesQuery);
         queryClient.invalidateQueries(drainedQuery);
+        queryClient.invalidateQueries(budgetQuery);
       },
     });
     const handleDelete = () => {
@@ -96,6 +107,14 @@ function Liabilities() {
           " " +
           "Liabilities and Budget"}
       </h1>
+      <h2 className="text-xl text-center mb-2">
+        Budget:{" "}
+        {isPendingBudget
+          ? "Getting Budget to load..."
+          : getBudget.budget.map((budget) => (
+              <h1 key={budget.id}>{budget.limit}</h1>
+            ))}
+      </h2>
       <Table>
         <TableCaption>A list of all Liabilities</TableCaption>
         <TableHeader>

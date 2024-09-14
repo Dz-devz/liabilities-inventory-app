@@ -36,6 +36,21 @@ export const drainedQuery = queryOptions({
   queryFn: getTotalDrained,
 });
 
+export const budgetQuery = queryOptions({
+  queryKey: ["get-budget"],
+  queryFn: getBudget,
+  staleTime: 60 * 60 * 1000,
+});
+
+export async function getBudget() {
+  const res = await api.budget.$get();
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+  const data = await res.json();
+  return data;
+}
+
 export async function getSingleLiabilities({ id }: { id: string }) {
   const res = await api.liabilities[":id{[0-9]+}"].$get({
     param: { id: id.toString() },

@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../db";
 import { budget as budgetTable } from "../db/schema/budget";
@@ -10,9 +10,7 @@ export const budgetRoute = new Hono().get("/", getProfile, async (c) => {
   const budget = await db
     .select()
     .from(budgetTable)
-    .where(eq(budgetTable.userId, user.id))
-    .orderBy(desc(budgetTable.createdAt))
-    .limit(100);
+    .orderBy(desc(budgetTable.createdAt));
 
   return c.json({ budget: budget });
 });
