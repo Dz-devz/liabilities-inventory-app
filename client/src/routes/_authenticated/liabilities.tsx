@@ -108,11 +108,10 @@ function Liabilities() {
           "Liabilities and Budget"}
       </h1>
       <h2 className="text-xl text-center mb-2">
-        Budget:{" "}
         {isPendingBudget
           ? "Getting Budget to load..."
           : getBudget.budget.map((budget) => (
-              <h1 key={budget.id}>{budget.limit}</h1>
+              <span key={budget.id}>{budget.limit}</span>
             ))}
       </h2>
       <Table>
