@@ -82,16 +82,21 @@ function SingleLiabilities() {
       fill: "var(--color-chrome)",
     },
     {
+      id: liability.id,
       title: "Total",
       amount: Number(totalDrainedData?.total),
       fill: "var(--color-firefox)",
     },
   ];
 
+  const totalD = totalDrainedData?.total;
+  const amountD = liability.amount;
+  const totalMins = Number(totalD) - Number(amountD);
+
   return (
     <div>
       <h2>{liability.title}</h2>
-      <p>Amount: {liability.amount}</p>
+      <p>Amount: {totalMins}</p>
       <Card className="flex flex-col">
         <CardHeader className="items-center pb-0">
           <CardTitle>Pie Chart</CardTitle>
@@ -129,7 +134,7 @@ function SingleLiabilities() {
                             y={viewBox.cy}
                             className="fill-foreground text-3xl font-bold"
                           >
-                            {totalDrainedData?.total}
+                            {totalMins}
                           </tspan>
                           <tspan
                             x={viewBox.cx}
