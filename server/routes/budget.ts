@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { and, desc, gte, lt } from "drizzle-orm";
+import { and, desc, eq, gte, lt } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../db";
 import { budget as budgetTable, insertBudgetSchema } from "../db/schema/budget";
@@ -66,4 +66,20 @@ export const budgetRoute = new Hono()
 
     c.status(201);
     return c.json(result);
+  })
+  .put("/:id{[0-9]+}", getProfile, async (c) => {
+    const user = c.var.user;
+    const id = Number.parseInt(c.req.param("id"));
+    const { limit } = await c.req.json();
+
+    const updateBudget = await db
+      .update(budgetTable)
+      .set({
+        limit,
+      })
+      .where(and(eq(budgetTable.userId, user.id), eq(budgetTable.id, id)))
+      .returning()
+      .then((res) => res[0]);
+
+    return c.json({ updateBudget: updateBudget });
   });

@@ -42,6 +42,25 @@ export const budgetQuery = queryOptions({
   staleTime: 60 * 60 * 1000,
 });
 
+export async function updateBudget({
+  id,
+}: {
+  id: string;
+  updatedData: { limit: string };
+}) {
+  const res = await api.budget[":id{[0-9]+}"].$put({
+    param: { id: id.toString() },
+    body: updatedData,
+  });
+
+  if (!res.ok) {
+    throw new Error("Server Error");
+  }
+
+  const data = await res.json();
+  return data;
+}
+
 export async function getBudget() {
   const res = await api.budget.$get();
   if (!res.ok) {

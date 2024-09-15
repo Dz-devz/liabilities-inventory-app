@@ -19,6 +19,7 @@ import {
 } from "@/lib/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Typography } from "antd";
 import { TrashIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -29,6 +30,8 @@ export const Route = createFileRoute("/_authenticated/liabilities")({
 function Liabilities() {
   const navigate = useNavigate({ from: Route.fullPath });
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [editableStr, setEditableStr] = useState("");
+  const { Paragraph } = Typography;
 
   const handleClickId = (id: number) => {
     navigate({ to: `${id}` });
@@ -111,9 +114,18 @@ function Liabilities() {
         {isPendingBudget
           ? "Getting Budget to load..."
           : getBudget.budget.map((budget) => (
-              <span key={budget.id}>{budget.limit}</span>
+              // <span key={budget.id}>{budget.limit}</span>
+              <div key={budget.id}>
+                <Paragraph
+                  className="text-white"
+                  editable={{ onChange: setEditableStr }}
+                >
+                  {budget.limit}
+                </Paragraph>
+              </div>
             ))}
       </h2>
+
       <Table>
         <TableCaption>A list of all Liabilities</TableCaption>
         <TableHeader>
