@@ -13,10 +13,12 @@ import {
 } from "@/components/ui/table";
 import {
   budgetQuery,
+  createBudget,
   deleteLiabilities,
   drainedQuery,
   liabilitiesQuery,
 } from "@/lib/api";
+import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Typography } from "antd";
@@ -29,9 +31,26 @@ export const Route = createFileRoute("/_authenticated/liabilities")({
 
 function Liabilities() {
   const navigate = useNavigate({ from: Route.fullPath });
+  const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [editableStr, setEditableStr] = useState("");
   const { Paragraph } = Typography;
+  const form = useForm({
+    defaultValues: {
+      limit: "0",
+    },
+    onSubmit: async ({ value }) => {
+      // making sure that it gets the past data before getting the new data to avoid duplication
+      const monthlyBudget = await createBudget({ value });
+      const lastMonthBudget = await queryClient.ensureQueryData(budgetQuery);
+      queryClient.setQueryData(budgetQuery.queryKey, {
+        ...lastMonthBudget,
+        budget: [monthlyBudget],
+      });
+
+      navigate({ to: "/liabilities" });
+    },
+  });
 
   const handleClickId = (id: number) => {
     navigate({ to: `${id}` });
@@ -117,10 +136,10 @@ function Liabilities() {
               // <span key={budget.id}>{budget.limit}</span>
               <div key={budget.id}>
                 <Paragraph
-                  className="text-white"
+                  className="text-white text-2xl"
                   editable={{ onChange: setEditableStr }}
                 >
-                  {budget.limit}
+                  {editableStr}
                 </Paragraph>
               </div>
             ))}
