@@ -25,7 +25,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { Typography } from "antd";
 import { TrashIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/liabilities")({
   component: Liabilities,
@@ -37,16 +37,6 @@ function Liabilities() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [editableStr, setEditableStr] = useState("");
   const { Paragraph } = Typography;
-  const mutation = useMutation({
-    mutationFn: updateBudget,
-    onError: () => {
-      throw Error("Failed to update budget");
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(budgetQuery);
-      console.log("invalidate success");
-    },
-  });
 
   const updateBudgetMutation = useMutation({
     mutationFn: updateBudget,
@@ -78,22 +68,22 @@ function Liabilities() {
 
   //     if (lastMonthBudget?.budget.length > 0) {
   //       // If there's a budget for the current month, update it
-  //       // const updatedBudget = await updateBudget({
-  //       //   id: JSON.stringify(lastMonthBudget.budget[0].id),
-  //       //   limit: value.limit,
-  //       // });
+  //       const updatedBudget = await updateBudget({
+  //         id: JSON.stringify(lastMonthBudget.budget[0].id),
+  //         limit: value.limit,
+  //       });
 
-  //       // const updatedBudgetData = {
-  //       //   id: updatedBudget.id,
-  //       //   userId: updatedBudget.userId,
-  //       //   createdAt: updatedBudget.createdAt,
-  //       //   limit: updatedBudget.limit,
-  //       // };
+  //       const updatedBudgetData = {
+  //         id: updatedBudget.id,
+  //         userId: updatedBudget.userId,
+  //         createdAt: updatedBudget.createdAt,
+  //         limit: updatedBudget.limit,
+  //       };
 
-  //       // queryClient.setQueryData(budgetQuery.queryKey, {
-  //       //   ...lastMonthBudget,
-  //       //   budget: [updatedBudgetData],
-  //       // });
+  //       queryClient.setQueryData(budgetQuery.queryKey, {
+  //         ...lastMonthBudget,
+  //         budget: [updatedBudgetData],
+  //       });
   //       await mutation.mutateAsync({
   //         id: JSON.stringify(lastMonthBudget.budget[0].id),
   //         limit: value.limit,
@@ -144,12 +134,8 @@ function Liabilities() {
   const handleChange = (value: string) => {
     setEditableStr(value);
     form.setFieldValue("limit", value);
-    mutation.mutate({ id: value, limit: value });
+    updateBudgetMutation.mutate({ id: value, limit: value });
   };
-
-  useEffect(() => {
-    console.log(editableStr);
-  }, [editableStr]);
 
   const {
     isPending: isPendingLiabilities,
@@ -248,6 +234,7 @@ function Liabilities() {
                     className="text-white text-2xl"
                     editable={{ onChange: handleChange }}
                     onBlur={() => form.handleSubmit()}
+                    // onClick={() => form.handleSubmit()}
                   >
                     {defaultBudget.limit}
                   </Paragraph>

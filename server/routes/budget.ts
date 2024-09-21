@@ -68,7 +68,7 @@ export const budgetRoute = new Hono()
     c.status(201);
     return c.json(result);
   })
-  .put("/:id", getProfile, async (c) => {
+  .put("/:id", getProfile, zValidator("json", budgetSchema), async (c) => {
     const user = c.var.user;
     const id = Number.parseInt(c.req.param("id"));
     const { limit } = await c.req.json();
