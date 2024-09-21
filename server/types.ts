@@ -14,6 +14,12 @@ export const budgetSchema = insertBudgetSchema.omit({
   id: true,
 });
 
+export const budgetSingleSchema = insertBudgetSchema.omit({
+  userId: true,
+  createdAt: true,
+  limit: true,
+});
+
 export type CreateBudget = z.infer<typeof budgetSchema>;
 
 export type CreateLiabilities = z.infer<typeof liabilitiesSchema>;

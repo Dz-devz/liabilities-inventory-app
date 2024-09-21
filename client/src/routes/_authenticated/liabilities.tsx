@@ -122,7 +122,6 @@ function Liabilities() {
           value,
         });
       }
-
       navigate({ to: "/liabilities" });
     },
   });
@@ -131,9 +130,10 @@ function Liabilities() {
     navigate({ to: `${id}` });
   };
 
-  const handleChange = (value: string) => {
+  const handleChange = async (value: string) => {
     setEditableStr(value);
     form.setFieldValue("limit", value);
+    form.handleSubmit();
   };
 
   const {
@@ -151,6 +151,16 @@ function Liabilities() {
     error: errorBudget,
     data: getBudget,
   } = useQuery(budgetQuery);
+
+  // const getSing = getBudget?.budget.map((bud) => {
+  //   return singleBudgetQuery(JSON.stringify(bud.id))
+  // })
+
+  // const {
+  //   isPending: isPendingSingleBudget,
+  //   error: errorSingleBudget,
+  //   data: getSingleBudget,
+  // } = useQuery(getSing);
 
   if (errorLiabilities || errorTotal || errorBudget)
     return "An Error has occurred" + errorLiabilities?.message || errorTotal;
