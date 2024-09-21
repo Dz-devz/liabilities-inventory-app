@@ -25,7 +25,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { Typography } from "antd";
 import { TrashIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/liabilities")({
   component: Liabilities,
@@ -37,6 +37,81 @@ function Liabilities() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [editableStr, setEditableStr] = useState("");
   const { Paragraph } = Typography;
+  const mutation = useMutation({
+    mutationFn: updateBudget,
+    onError: () => {
+      throw Error("Failed to update budget");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(budgetQuery);
+      console.log("invalidate success");
+    },
+  });
+
+  const updateBudgetMutation = useMutation({
+    mutationFn: updateBudget,
+    onSuccess: () => {
+      queryClient.invalidateQueries(budgetQuery);
+    },
+    onError: (error) => {
+      console.error("Failed to update budget:", error);
+    },
+  });
+
+  const createBudgetMutation = useMutation({
+    mutationFn: createBudget,
+    onSuccess: () => {
+      queryClient.invalidateQueries(budgetQuery);
+    },
+    onError: (error) => {
+      console.error("Failed to create budget:", error);
+    },
+  });
+
+  // const form = useForm({
+  //   validatorAdapter: zodValidator(),
+  //   defaultValues: {
+  //     limit: editableStr,
+  //   },
+  //   onSubmit: async ({ value }) => {
+  //     const lastMonthBudget = await queryClient.ensureQueryData(budgetQuery);
+
+  //     if (lastMonthBudget?.budget.length > 0) {
+  //       // If there's a budget for the current month, update it
+  //       // const updatedBudget = await updateBudget({
+  //       //   id: JSON.stringify(lastMonthBudget.budget[0].id),
+  //       //   limit: value.limit,
+  //       // });
+
+  //       // const updatedBudgetData = {
+  //       //   id: updatedBudget.id,
+  //       //   userId: updatedBudget.userId,
+  //       //   createdAt: updatedBudget.createdAt,
+  //       //   limit: updatedBudget.limit,
+  //       // };
+
+  //       // queryClient.setQueryData(budgetQuery.queryKey, {
+  //       //   ...lastMonthBudget,
+  //       //   budget: [updatedBudgetData],
+  //       // });
+  //       await mutation.mutateAsync({
+  //         id: JSON.stringify(lastMonthBudget.budget[0].id),
+  //         limit: value.limit,
+  //       });
+  //       console.log("Last Month Budget:", lastMonthBudget);
+  //     } else {
+  //       const monthlyBudget = await createBudget({ value });
+
+  //       queryClient.setQueryData(budgetQuery.queryKey, {
+  //         ...lastMonthBudget,
+  //         budget: [monthlyBudget],
+  //       });
+  //     }
+
+  //     navigate({ to: "/liabilities" });
+  //   },
+  // });
+
   const form = useForm({
     validatorAdapter: zodValidator(),
     defaultValues: {
@@ -47,28 +122,14 @@ function Liabilities() {
 
       if (lastMonthBudget?.budget.length > 0) {
         // If there's a budget for the current month, update it
-        const updatedBudget = await updateBudget({
+        await updateBudgetMutation.mutateAsync({
           id: JSON.stringify(lastMonthBudget.budget[0].id),
           limit: value.limit,
         });
-
-        const updatedBudgetData = {
-          id: updatedBudget.id,
-          userId: updatedBudget.userId,
-          createdAt: updatedBudget.createdAt,
-          limit: updatedBudget.limit,
-        };
-
-        queryClient.setQueryData(budgetQuery.queryKey, {
-          ...lastMonthBudget,
-          budget: [updatedBudgetData],
-        });
       } else {
-        const monthlyBudget = await createBudget({ value });
-
-        queryClient.setQueryData(budgetQuery.queryKey, {
-          ...lastMonthBudget,
-          budget: [monthlyBudget],
+        // Create a new budget if none exists
+        await createBudgetMutation.mutateAsync({
+          value,
         });
       }
 
@@ -82,8 +143,13 @@ function Liabilities() {
 
   const handleChange = (value: string) => {
     setEditableStr(value);
-    form.setFieldValue("limit", value); // Sync with form state
+    form.setFieldValue("limit", value);
+    mutation.mutate({ id: value, limit: value });
   };
+
+  useEffect(() => {
+    console.log(editableStr);
+  }, [editableStr]);
 
   const {
     isPending: isPendingLiabilities,
