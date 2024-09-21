@@ -67,7 +67,7 @@ export const budgetRoute = new Hono()
     c.status(201);
     return c.json(result);
   })
-  .put("/:id{[0-9]+}", getProfile, async (c) => {
+  .put("/:id", getProfile, async (c) => {
     const user = c.var.user;
     const id = Number.parseInt(c.req.param("id"));
     const { limit } = await c.req.json();
@@ -75,7 +75,7 @@ export const budgetRoute = new Hono()
     const updateBudget = await db
       .update(budgetTable)
       .set({
-        limit,
+        limit: limit,
       })
       .where(and(eq(budgetTable.userId, user.id), eq(budgetTable.id, id)))
       .returning()

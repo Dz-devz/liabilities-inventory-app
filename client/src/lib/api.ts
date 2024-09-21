@@ -46,11 +46,10 @@ export async function updateBudget({
   id,
 }: {
   id: string;
-  updatedData: { limit: string };
+  // updatedData: { limit: string };
 }) {
-  const res = await api.budget[":id{[0-9]+}"].$put({
-    param: { id: id.toString() },
-    body: updatedData,
+  const res = await api.budget[":id"].$put({
+    param: { id: id },
   });
 
   if (!res.ok) {

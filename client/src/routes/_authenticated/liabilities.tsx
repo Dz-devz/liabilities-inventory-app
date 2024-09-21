@@ -21,6 +21,7 @@ import {
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-form-adapter";
 import { Typography } from "antd";
 import { TrashIcon } from "lucide-react";
 import { useState } from "react";
@@ -36,13 +37,13 @@ function Liabilities() {
   const [editableStr, setEditableStr] = useState("");
   const { Paragraph } = Typography;
   const form = useForm({
+    validatorAdapter: zodValidator(),
     defaultValues: {
-      limit: "0",
+      limit: editableStr,
     },
     onSubmit: async ({ value }) => {
-      // making sure that it gets the past data before getting the new data to avoid duplication
-      const monthlyBudget = await createBudget({ value });
       const lastMonthBudget = await queryClient.ensureQueryData(budgetQuery);
+      const monthlyBudget = await createBudget({ value });
       queryClient.setQueryData(budgetQuery.queryKey, {
         ...lastMonthBudget,
         budget: [monthlyBudget],
@@ -54,6 +55,11 @@ function Liabilities() {
 
   const handleClickId = (id: number) => {
     navigate({ to: `${id}` });
+  };
+
+  const handleChange = (value: string) => {
+    setEditableStr(value);
+    form.setFieldValue("limit", value); // Sync with form state
   };
 
   const {
@@ -134,14 +140,24 @@ function Liabilities() {
           ? "Getting Budget to load..."
           : getBudget.budget.map((budget) => (
               // <span key={budget.id}>{budget.limit}</span>
-              <div key={budget.id}>
-                <Paragraph
-                  className="text-white text-2xl"
-                  editable={{ onChange: setEditableStr }}
-                >
-                  {editableStr}
-                </Paragraph>
-              </div>
+              <form
+                className="max-w-sm m-auto"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  form.handleSubmit();
+                }}
+              >
+                <div key={budget.id}>
+                  <Paragraph
+                    className="text-white text-2xl"
+                    editable={{ onChange: handleChange }}
+                    onBlur={() => form.handleSubmit()}
+                  >
+                    {budget.limit}
+                  </Paragraph>
+                </div>
+              </form>
             ))}
       </h2>
 
