@@ -50,6 +50,31 @@ export const budgetRoute = new Hono()
       budget: budget,
     });
   })
+  .get("/:id", getProfile, async (c) => {
+    const user = c.var.user;
+    const id = Number.parseInt(c.req.param("id"));
+    // Get current date and month name
+    const now = new Date();
+    const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
+
+    // Query budgets for the current month
+    const budget = await db
+      .select()
+      .from(budgetTable)
+      .where(
+        and(
+          eq(budgetTable.userId, user.id),
+          eq(budgetTable.id, id),
+          gte(budgetTable.createdAt, startOfMonth),
+          lt(budgetTable.createdAt, endOfMonth)
+        )
+      )
+      .orderBy(desc(budgetTable.createdAt));
+
+    return c.json({
+      budget: budget,
+    });
+  })
   .post("/", getProfile, zValidator("json", budgetSchema), async (c) => {
     const data = await c.req.valid("json");
     const user = c.var.user;

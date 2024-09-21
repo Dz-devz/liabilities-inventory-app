@@ -134,7 +134,6 @@ function Liabilities() {
   const handleChange = (value: string) => {
     setEditableStr(value);
     form.setFieldValue("limit", value);
-    updateBudgetMutation.mutate({ id: value, limit: value });
   };
 
   const {
