@@ -17,6 +17,7 @@ import {
   deleteLiabilities,
   drainedQuery,
   liabilitiesQuery,
+  updateBudget,
 } from "@/lib/api";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -43,11 +44,33 @@ function Liabilities() {
     },
     onSubmit: async ({ value }) => {
       const lastMonthBudget = await queryClient.ensureQueryData(budgetQuery);
-      const monthlyBudget = await createBudget({ value });
-      queryClient.setQueryData(budgetQuery.queryKey, {
-        ...lastMonthBudget,
-        budget: [monthlyBudget],
-      });
+
+      if (lastMonthBudget?.budget.length > 0) {
+        // If there's a budget for the current month, update it
+        const updatedBudget = await updateBudget({
+          id: JSON.stringify(lastMonthBudget.budget[0].id),
+          limit: value.limit,
+        });
+
+        const updatedBudgetData = {
+          id: updatedBudget.id,
+          userId: updatedBudget.userId,
+          createdAt: updatedBudget.createdAt,
+          limit: updatedBudget.limit,
+        };
+
+        queryClient.setQueryData(budgetQuery.queryKey, {
+          ...lastMonthBudget,
+          budget: [updatedBudgetData],
+        });
+      } else {
+        const monthlyBudget = await createBudget({ value });
+
+        queryClient.setQueryData(budgetQuery.queryKey, {
+          ...lastMonthBudget,
+          budget: [monthlyBudget],
+        });
+      }
 
       navigate({ to: "/liabilities" });
     },
@@ -126,6 +149,11 @@ function Liabilities() {
     );
   }
 
+  const defaultBudget = {
+    id: 0,
+    limit: 0, // Set a default value
+  };
+
   const isDeleteButtonVisible = selectedIds.size > 0;
   const date: Date = new Date();
   return (
@@ -136,10 +164,11 @@ function Liabilities() {
           "Liabilities and Budget"}
       </h1>
       <h2 className="text-xl text-center mb-2">
-        {isPendingBudget
-          ? "Getting Budget to load..."
-          : getBudget.budget.map((budget) => (
-              // <span key={budget.id}>{budget.limit}</span>
+        {isPendingBudget ? (
+          <span>Getting Budget to load...</span>
+        ) : (
+          <>
+            {getBudget?.budget.length === 0 ? (
               <form
                 className="max-w-sm m-auto"
                 onSubmit={(e) => {
@@ -148,17 +177,41 @@ function Liabilities() {
                   form.handleSubmit();
                 }}
               >
-                <div key={budget.id}>
+                <div key={defaultBudget.id}>
                   <Paragraph
                     className="text-white text-2xl"
                     editable={{ onChange: handleChange }}
                     onBlur={() => form.handleSubmit()}
                   >
-                    {budget.limit}
+                    {defaultBudget.limit}
                   </Paragraph>
                 </div>
               </form>
-            ))}
+            ) : (
+              getBudget.budget.map((budget) => (
+                <form
+                  key={budget.id}
+                  className="max-w-sm m-auto"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.handleSubmit();
+                  }}
+                >
+                  <div>
+                    <Paragraph
+                      className="text-white text-2xl"
+                      editable={{ onChange: handleChange }}
+                      onBlur={() => form.handleSubmit()}
+                    >
+                      {budget.limit}
+                    </Paragraph>
+                  </div>
+                </form>
+              ))
+            )}
+          </>
+        )}
       </h2>
 
       <Table>

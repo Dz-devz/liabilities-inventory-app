@@ -44,12 +44,14 @@ export const budgetQuery = queryOptions({
 
 export async function updateBudget({
   id,
+  limit,
 }: {
   id: string;
-  // updatedData: { limit: string };
+  limit: string;
 }) {
   const res = await api.budget[":id"].$put({
     param: { id: id },
+    json: { limit: limit },
   });
 
   if (!res.ok) {
