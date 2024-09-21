@@ -16,23 +16,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function NavLinks() {
-  const { isAuthenticated, getToken } = useKindeAuth();
-
-  //TODO put in middleware
-  const fetchData = async () => {
-    try {
-      const accessToken = await getToken();
-      const res = await fetch(`<your-api>`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const { data } = await res.json();
-      console.log({ data });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const { isAuthenticated } = useKindeAuth();
 
   return (
     <div className="p-4 w-48 flex flex-col gap-2 border-r-2 border-border bg-secondary text-[#f2f4f6]">
