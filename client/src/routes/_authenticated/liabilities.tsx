@@ -133,6 +133,7 @@ function Liabilities() {
   const handleChange = async (value: string) => {
     setEditableStr(value);
     form.setFieldValue("limit", value);
+    // Added handlesubmit inside handlechange to rerender changes of data, onSubmit without using button or similar can have an issue rerendering new data.
     form.handleSubmit();
   };
 
@@ -151,16 +152,6 @@ function Liabilities() {
     error: errorBudget,
     data: getBudget,
   } = useQuery(budgetQuery);
-
-  // const getSing = getBudget?.budget.map((bud) => {
-  //   return singleBudgetQuery(JSON.stringify(bud.id))
-  // })
-
-  // const {
-  //   isPending: isPendingSingleBudget,
-  //   error: errorSingleBudget,
-  //   data: getSingleBudget,
-  // } = useQuery(getSing);
 
   if (errorLiabilities || errorTotal || errorBudget)
     return "An Error has occurred" + errorLiabilities?.message || errorTotal;
@@ -210,9 +201,10 @@ function Liabilities() {
     );
   }
 
+  // Set a default value to show paragraph
   const defaultBudget = {
     id: 0,
-    limit: 0, // Set a default value
+    limit: 0,
   };
 
   const isDeleteButtonVisible = selectedIds.size > 0;
