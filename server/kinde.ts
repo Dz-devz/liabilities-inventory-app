@@ -1,7 +1,6 @@
 import {
   createKindeServerClient,
   GrantType,
-  type SessionManager,
   type UserType,
 } from "@kinde-oss/kinde-typescript-sdk";
 import type { Context } from "hono";
@@ -21,30 +20,41 @@ export const kindeClient = createKindeServerClient(
 
 let store: Record<string, unknown> = {};
 
-export const sessionManager = (c: Context): SessionManager => ({
+// Session manager using Hono's cookie utilities
+export const sessionManager = (c: Context) => ({
+  // Get a session item (from cookies)
   async getSessionItem(key: string) {
-    const result = getCookie(c, key);
-    return result;
+    return getCookie(c, key); // Returns the value of the cookie
   },
+
+  // Set a session item (in cookies)
   async setSessionItem(key: string, value: unknown) {
     const cookieOptions = {
-      httpOnly: true,
-      secure: true,
-      sameSite: "Lax",
+      httpOnly: true, // Makes the cookie inaccessible via JavaScript
+      secure: true, // Ensures cookies are sent over HTTPS
+      sameSite: "Lax", // Restricts cross-site sending of cookies
+      maxAge: 60 * 60 * 24 * 7, // Set session/cookies expire to 7days
     } as const;
-    if (typeof value === "string") {
-      setCookie(c, key, value, cookieOptions);
-    } else {
-      setCookie(c, key, JSON.stringify(value), cookieOptions);
-    }
+
+    // If the value is not a string, convert it to JSON
+    const cookieValue =
+      typeof value === "string" ? value : JSON.stringify(value);
+
+    // Set the cookie
+    setCookie(c, key, cookieValue, cookieOptions);
   },
+
+  // Remove a session item (delete cookie)
   async removeSessionItem(key: string) {
-    deleteCookie(c, key);
+    deleteCookie(c, key); // Removes the cookie with the given key
   },
+
+  // Destroy the entire session (remove multiple cookies)
   async destroySession() {
-    ["id_token", "access_token", "user", "refresh_token"].forEach((key) => {
-      deleteCookie(c, key);
-    });
+    const sessionKeys = ["id_token", "access_token", "user", "refresh_token"];
+
+    // Loop through each session key and delete the associated cookie
+    sessionKeys.forEach((key) => deleteCookie(c, key));
   },
 });
 
