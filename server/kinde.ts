@@ -1,6 +1,7 @@
 import {
   createKindeServerClient,
   GrantType,
+  type SessionManager,
   type UserType,
 } from "@kinde-oss/kinde-typescript-sdk";
 import type { Context } from "hono";
@@ -21,7 +22,7 @@ export const kindeClient = createKindeServerClient(
 let store: Record<string, unknown> = {};
 
 // Session manager using Hono's cookie utilities
-export const sessionManager = (c: Context) => ({
+export const sessionManager = (c: Context): SessionManager => ({
   // Get a session item (from cookies)
   async getSessionItem(key: string) {
     return getCookie(c, key); // Returns the value of the cookie
