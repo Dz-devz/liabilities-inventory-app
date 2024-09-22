@@ -1,5 +1,5 @@
 "use client";
-import { drainedQuery, getSingleLiabilities } from "@/lib/api";
+import { budgetQuery, drainedQuery, getSingleLiabilities } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -24,15 +24,12 @@ import {
 export const description = "A donut chart with text";
 
 const chartConfig = {
-  amount: {
-    label: "Amount",
-  },
   chrome: {
     label: "Total",
     color: "hsl(var(--chart-1))",
   },
-  total: {
-    label: "total",
+  budget: {
+    label: "Budget",
     color: "hsl(var(--chart-2))",
   },
   firefox: {
@@ -66,13 +63,27 @@ function SingleLiabilities() {
     data: totalDrainedData,
   } = useQuery(drainedQuery);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading liability details</div>;
+  const {
+    isPending: isPendingBudget,
+    error: errorBudget,
+    data: getBudget,
+  } = useQuery(budgetQuery);
 
-  if (!data) return <div>No data found</div>;
+  if (isLoading || isPendingTotal || isPendingBudget)
+    return <div>Loading...</div>;
+  if (error || errorTotal || errorBudget)
+    return <div>Error loading liability details</div>;
+
+  if (!data || !totalDrainedData || !getBudget) return <div>No data found</div>;
 
   // to ensure getting a single Data
   const liability = data.singleLiabilities[0];
+  const budget = getBudget.budget[0];
+
+  const getMonthName = (date: Date): string => {
+    return date.toLocaleString("default", { month: "long" });
+  };
+  const d = new Date();
 
   const liabilityData = [
     {
@@ -83,24 +94,32 @@ function SingleLiabilities() {
     },
     {
       id: liability.id,
-      title: "Total",
+      title: "Total Spent",
       amount: Number(totalDrainedData?.total),
       fill: "var(--color-firefox)",
+    },
+    {
+      id: budget.id,
+      title: "Budget",
+      amount: Number(budget?.limit),
+      fill: "var(--color-budget)",
     },
   ];
 
   const totalD = totalDrainedData?.total;
   const amountD = liability.amount;
-  const totalMins = Number(totalD) - Number(amountD);
+  const budgetD = budget.limit;
+  const totalMins = Number(totalD) - Number(amountD) - Number(budgetD);
 
   return (
     <div>
-      <h2>{liability.title}</h2>
-      <p>Amount: {totalMins}</p>
+      <h2 className="text-2xl">Category: {liability.title}</h2>
+      <p className="text-xl">Budget: {budgetD}</p>
+      <p className="text-xl mb-2">Amount: {amountD}</p>
       <Card className="flex flex-col">
         <CardHeader className="items-center pb-0">
           <CardTitle>Pie Chart</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
+          <CardDescription>{getMonthName(d)}</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 pb-0">
           <ChartContainer
@@ -141,7 +160,7 @@ function SingleLiabilities() {
                             y={(viewBox.cy || 0) + 24}
                             className="fill-muted-foreground"
                           >
-                            Total
+                            Remaining Balance
                           </tspan>
                         </text>
                       );
