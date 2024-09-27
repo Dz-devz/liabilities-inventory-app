@@ -3,6 +3,7 @@ import { and, desc, eq, gte, lt } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../db";
 import { budget as budgetTable, insertBudgetSchema } from "../db/schema/budget";
+import { liabilities as liabilitiesTable } from "../db/schema/liabilities";
 import { getProfile } from "../kinde";
 import { budgetSchema } from "../types";
 
@@ -108,4 +109,48 @@ export const budgetRoute = new Hono()
       .then((res) => res[0]);
 
     return c.json(updateBudget);
+  })
+  .get("/limit", getProfile, async (c) => {
+    const user = c.var.user;
+
+    // Get current date and month name
+    const now = new Date();
+    const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
+
+    // Query budgets for the current month
+    const budgetResult = await db
+      .select({ limit: budgetTable.limit })
+      .from(budgetTable)
+      .where(
+        and(
+          eq(budgetTable.userId, user.id),
+          gte(budgetTable.createdAt, startOfMonth),
+          lt(budgetTable.createdAt, endOfMonth)
+        )
+      )
+      .orderBy(desc(budgetTable.createdAt))
+      .limit(1);
+
+    const liabilities = await db
+      .select({ amount: liabilitiesTable.amount })
+      .from(liabilitiesTable)
+      .where(eq(liabilitiesTable.userId, user.id))
+      .orderBy(desc(liabilitiesTable.createdAt))
+      .limit(100);
+
+    const totalLiabilities = liabilities.reduce(
+      (sum, liability) => sum + Number(liability.amount),
+      0
+    );
+
+    const limitArray = budgetResult.map((budget) => Number(budget.limit));
+    const limit =
+      limitArray.length > 0
+        ? limitArray[0] - totalLiabilities
+        : -totalLiabilities;
+
+    if (limit)
+      return c.json({
+        limit: limit,
+      });
   });
