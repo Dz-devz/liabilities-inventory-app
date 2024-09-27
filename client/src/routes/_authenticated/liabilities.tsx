@@ -258,7 +258,9 @@ function Liabilities() {
                       editable={{ onChange: handleChange }}
                       onBlur={() => form.handleSubmit()}
                     >
-                      {budget.limit}
+                      {updateBudgetMutation.isPending
+                        ? "Updating Budget..."
+                        : budget.limit}
                     </Paragraph>
                   </div>
                 </form>

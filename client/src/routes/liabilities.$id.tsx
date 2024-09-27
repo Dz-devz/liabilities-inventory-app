@@ -106,16 +106,18 @@ function SingleLiabilities() {
     },
   ];
 
-  const totalD = totalDrainedData?.total;
+  // const totalD = totalDrainedData?.total;
   const amountD = liability.amount;
   const budgetD = budget.limit;
-  const totalMins = Number(totalD) - Number(amountD) - Number(budgetD);
+  const totalMins = Number(budgetD) - Number(amountD);
 
   return (
     <div>
-      <h2 className="text-2xl">Category: {liability.title}</h2>
-      <p className="text-xl">Budget: {budgetD}</p>
-      <p className="text-xl mb-2">Amount: {amountD}</p>
+      <h2 className="text-3xl font-bold mb-4">Category: {liability.title}</h2>
+      <p className="text-lg font-medium">Budget Limit:</p>
+      <p className="text-xl font-semibold text-green-600">{budgetD}</p>
+      <p className="text-lg font-medium">Amount Spent:</p>
+      <p className="text-xl font-semibold text-red-600">{amountD}</p>
       <Card className="flex flex-col">
         <CardHeader className="items-center pb-0">
           <CardTitle>Pie Chart</CardTitle>
