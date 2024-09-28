@@ -99,6 +99,47 @@ export const budgetRoute = new Hono()
     const id = Number.parseInt(c.req.param("id"));
     const { limit } = await c.req.json();
 
+    const now = new Date();
+    const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
+
+    const liabilities = await db
+      .select()
+      .from(liabilitiesTable)
+      .where(eq(liabilitiesTable.userId, user.id))
+      .orderBy(desc(liabilitiesTable.createdAt))
+      .limit(100);
+
+    // const budgets = await db
+    //   .select({ limit: budgetTable.limit })
+    //   .from(budgetTable)
+    //   .where(
+    //     and(
+    //       eq(budgetTable.userId, user.id),
+    //       gte(budgetTable.createdAt, startOfMonth),
+    //       lt(budgetTable.createdAt, endOfMonth)
+    //     )
+    //   )
+    //   .orderBy(desc(budgetTable.createdAt));
+
+    const totalLiabilities = liabilities.reduce(
+      (sum, liability) => sum + Number(liability.amount),
+      0
+    );
+    // const limitUpdate =
+    //   budgets.length > 0 ? Number(limit) - totalLiabilities : 0;
+
+    console.log(limit);
+    console.log(totalLiabilities);
+
+    if (limit < totalLiabilities) {
+      return c.json(
+        {
+          message: "Cannot Update Budget lower than the total Liabilities",
+        },
+        400
+      );
+    }
+
     const updateBudget = await db
       .update(budgetTable)
       .set({

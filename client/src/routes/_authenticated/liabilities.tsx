@@ -37,6 +37,8 @@ function Liabilities() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [editableStr, setEditableStr] = useState("");
   const { Paragraph } = Typography;
+  const [globalError, setGlobalError] = useState<string>("");
+  const [showError, setShowError] = useState<boolean>(false);
 
   const updateBudgetMutation = useMutation({
     mutationFn: updateBudget,
@@ -110,18 +112,38 @@ function Liabilities() {
     onSubmit: async ({ value }) => {
       const lastMonthBudget = await queryClient.ensureQueryData(budgetQuery);
 
+      const liabilities = await queryClient.ensureQueryData(liabilitiesQuery); // Fetch latest liabilities
+
+      const totalLiabilities = liabilities.liabilities.reduce(
+        (sum, liability) => sum + Number(liability.amount),
+        0
+      );
+
+      // Validate the new limit before proceeding with update or creation
+      if (Number(value.limit) < totalLiabilities) {
+        setGlobalError("Cannot set budget lower than total liabilities");
+        setShowError(true);
+
+        setTimeout(() => {
+          setShowError(false);
+        }, 3000);
+        return;
+      }
+
       if (lastMonthBudget?.budget.length > 0) {
-        // If there's a budget for the current month, update it
+        // Update existing budget
         await updateBudgetMutation.mutateAsync({
           id: JSON.stringify(lastMonthBudget.budget[0].id),
           limit: value.limit,
         });
       } else {
-        // Create a new budget if none exists
         await createBudgetMutation.mutateAsync({
           value,
         });
       }
+      queryClient.invalidateQueries(budgetQuery);
+      queryClient.invalidateQueries(liabilitiesQuery);
+
       navigate({ to: "/liabilities" });
     },
   });
@@ -216,6 +238,13 @@ function Liabilities() {
           " " +
           "Liabilities and Budget"}
       </h1>
+      {showError && (
+        <div
+          className={`text-foreground bg-secondary p-2 rounded mb-4 transition-opacity duration-500 ${!showError ? "opacity-0" : "opacity-100"}`}
+        >
+          {globalError}
+        </div>
+      )}
       <h2 className="text-xl text-center mb-2">
         {isPendingBudget ? (
           <span>Getting Budget to load...</span>
