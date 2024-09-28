@@ -19,12 +19,15 @@ import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/create-liabilities")({
   component: CreateLiabilities,
 });
 
 function CreateLiabilities() {
+  const [globalError, setGlobalError] = useState<string>("");
+  const [showError, setShowError] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -36,21 +39,39 @@ function CreateLiabilities() {
       date: new Date().toISOString(),
     },
     onSubmit: async ({ value }) => {
-      // making sure that it gets the past data before getting the new data to avoid duplication
-      const recentLiabilities = await createLiabilities({ value });
-      const pastLiabilities =
-        await queryClient.ensureQueryData(liabilitiesQuery);
-      queryClient.setQueryData(liabilitiesQuery.queryKey, {
-        ...pastLiabilities,
-        liabilities: [recentLiabilities, ...pastLiabilities.liabilities],
-      });
+      try {
+        // making sure that it gets the past data before getting the new data to avoid duplication of data displaying
+        const pastLiabilities =
+          await queryClient.ensureQueryData(liabilitiesQuery);
 
-      navigate({ to: "/liabilities" });
+        const recentLiabilities = await createLiabilities({ value });
+
+        queryClient.setQueryData(liabilitiesQuery.queryKey, {
+          ...pastLiabilities,
+          liabilities: [recentLiabilities, ...pastLiabilities.liabilities],
+        });
+
+        navigate({ to: "/liabilities" });
+      } catch (error) {
+        setGlobalError("Cannot create more liabilities, budget exceeded. ");
+        setShowError(true);
+
+        setTimeout(() => {
+          setShowError(false);
+        }, 3000);
+      }
     },
   });
 
   return (
     <div className="p-2">
+      {showError && (
+        <div
+          className={`text-foreground bg-secondary p-2 rounded mb-4 transition-opacity duration-500 ${!showError ? "opacity-0" : "opacity-100"}`}
+        >
+          {globalError}
+        </div>
+      )}
       <form
         className="max-w-sm m-auto"
         onSubmit={(e) => {

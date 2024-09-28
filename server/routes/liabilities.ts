@@ -1,13 +1,28 @@
 import { zValidator } from "@hono/zod-validator";
-import { and, desc, eq, inArray, sum } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, lt, sum } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../db";
+import { budget as budgetTable } from "../db/schema/budget";
 import {
   insertLiabilitiesSchema,
   liabilities as liabilitiesTable,
 } from "../db/schema/liabilities";
 import { getProfile } from "../kinde";
 import { liabilitiesSchema } from "../types";
+
+const getStartAndEndOfMonth = (date: Date) => {
+  const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  const endOfMonth = new Date(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+  return { startOfMonth, endOfMonth };
+};
 
 export const liabilitiesRoute = new Hono()
   .get("/", getProfile, async (c) => {
@@ -39,10 +54,48 @@ export const liabilitiesRoute = new Hono()
     const data = await c.req.valid("json");
     const user = c.var.user;
 
+    const now = new Date();
+    const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
+
+    const budgets = await db
+      .select({ limit: budgetTable.limit })
+      .from(budgetTable)
+      .where(
+        and(
+          eq(budgetTable.userId, user.id),
+          gte(budgetTable.createdAt, startOfMonth),
+          lt(budgetTable.createdAt, endOfMonth)
+        )
+      )
+      .orderBy(desc(budgetTable.createdAt));
+
+    const liabilities = await db
+      .select()
+      .from(liabilitiesTable)
+      .where(eq(liabilitiesTable.userId, user.id))
+      .orderBy(desc(liabilitiesTable.createdAt))
+      .limit(100);
+
+    const totalLiabilities = liabilities.reduce(
+      (sum, liability) => sum + Number(liability.amount),
+      0
+    );
+    const limit =
+      budgets.length > 0 ? Number(budgets[0].limit) - totalLiabilities : 0;
+
     const validatedLiability = insertLiabilitiesSchema.parse({
       ...data,
       userId: user.id,
     });
+
+    if (limit < Number(data.amount)) {
+      return c.json(
+        {
+          message: "Cannot create more liabilities; budget exceeded.",
+        },
+        400
+      );
+    }
 
     const result = await db
       .insert(liabilitiesTable)
