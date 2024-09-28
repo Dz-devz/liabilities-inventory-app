@@ -27,6 +27,7 @@ export const Route = createFileRoute("/_authenticated/create-liabilities")({
 function CreateLiabilities() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
   const form = useForm({
     validatorAdapter: zodValidator(),
     defaultValues: {

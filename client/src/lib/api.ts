@@ -42,6 +42,11 @@ export const budgetQuery = queryOptions({
   staleTime: 60 * 60 * 1000,
 });
 
+export const limitQuery = queryOptions({
+  queryKey: ["get-limit"],
+  queryFn: getLimit,
+});
+
 // export const singleBudgetQuery = (id: string) =>
 //   queryOptions({
 //     queryKey: ["get-single-budget", id],
@@ -89,6 +94,15 @@ export async function getBudget() {
 //   const data = await res.json();
 //   return data;
 // }
+
+export async function getLimit() {
+  const res = await api.budget["limit"].$get();
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+  const data = await res.json();
+  return data;
+}
 
 export async function getSingleLiabilities({ id }: { id: string }) {
   const res = await api.liabilities[":id{[0-9]+}"].$get({
