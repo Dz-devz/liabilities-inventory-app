@@ -177,7 +177,9 @@ function Liabilities() {
   } = useQuery(budgetQuery);
 
   if (errorLiabilities || errorTotal || errorBudget)
-    return "An Error has occurred" + errorLiabilities?.message || errorTotal;
+    return (
+      "An Error has occurred" + errorLiabilities?.message || errorTotal?.message
+    );
 
   const handleCheckboxChange = (id: number, isChecked: boolean) => {
     setSelectedIds((prev) => {
