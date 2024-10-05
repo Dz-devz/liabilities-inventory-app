@@ -1,35 +1,109 @@
-import { liabilitiesHistoryQuery } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { drainedQuery, liabilitiesHistoryQuery } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 
-export default function LiabilitiesHistory() {
+export default function LiabilitiesHistory({ isTooltip = false }) {
   const {
     isPending: isPendingLiabilitiesHistory,
     error: errorLiabilitiesHistory,
     data: liabilitiesDataHistory,
   } = useQuery(liabilitiesHistoryQuery);
+  const {
+    isPending: isPendingTotal,
+    error: errorTotal,
+    data: totalDrainedData,
+  } = useQuery(drainedQuery);
 
   if (errorLiabilitiesHistory) {
     return "Error can't connect to " + errorLiabilitiesHistory.message;
   }
+  const date: Date = new Date();
 
   return (
-    <div>
-      <h1 className="text-white text-2xl">Table history</h1>
-      {isPendingLiabilitiesHistory ? (
-        <div className="text-white text-2xl">
-          <span>Getting Liabilities History...</span>
-        </div>
-      ) : (
-        liabilitiesDataHistory?.liabilities
-          .filter((liability) => new Date(liability.date).getMonth() === 8)
-          .map((liability) => (
-            <div className="text-white text-2xl" key={liability.id}>
-              <h3>{liability.title}</h3>
-              <p>{liability.amount}</p>
-              <p>{liability.date}</p>
-            </div>
-          ))
-      )}
+    <div className={`p-2 ${isTooltip ? "max-w-full" : "max-w-4xl"} m-auto`}>
+      <h1
+        className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
+      >
+        {date.toLocaleString("default", { month: "long" }) +
+          " Liabilities and Budget"}
+      </h1>
+
+      <Table className={isTooltip ? "text-sm" : ""}>
+        <TableCaption>A list of all Liabilities</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className={`w-[80px] ${isTooltip ? "text-sm" : ""}`}>
+              Id
+            </TableHead>
+            <TableHead className={isTooltip ? "text-sm" : ""}>
+              Category
+            </TableHead>
+            <TableHead className={isTooltip ? "text-sm" : ""}>Date</TableHead>
+            <TableHead className={`text-right ${isTooltip ? "text-sm" : ""}`}>
+              Amount
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {isPendingLiabilitiesHistory
+            ? Array(3) // Reduced number of skeletons for tooltip
+                .fill(0)
+                .map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell className="font-medium">
+                      <Skeleton className="h-4" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4" />
+                    </TableCell>
+                  </TableRow>
+                ))
+            : liabilitiesDataHistory?.liabilities.slice(0, 3).map(
+                (
+                  liability // Limited to 3 rows
+                ) => (
+                  <TableRow key={liability.id}>
+                    <TableCell className="font-medium">
+                      {liability.id}
+                    </TableCell>
+                    <TableCell className="hover:text-[#e1d6d6] hover:underline">
+                      {liability.title}
+                    </TableCell>
+                    <TableCell>{liability.date.split("T")[0]}</TableCell>
+                    <TableCell className="text-right">
+                      {liability.amount}
+                    </TableCell>
+                  </TableRow>
+                )
+              )}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={3}>Total Liabilities Spent</TableCell>
+            <TableCell className="text-right">
+              {isPendingLiabilitiesHistory
+                ? "Loading..."
+                : totalDrainedData?.total}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
     </div>
   );
 }
