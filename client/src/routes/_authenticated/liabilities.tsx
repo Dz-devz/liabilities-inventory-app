@@ -26,6 +26,7 @@ import {
   liabilitiesQuery,
   updateBudget,
 } from "@/lib/api";
+import { EditTwoTone } from "@ant-design/icons";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -241,147 +242,7 @@ function Liabilities() {
   const isDeleteButtonVisible = selectedIds.size > 0;
   const date: Date = new Date();
   return (
-    <div className="p-2 max-w-4xl m-auto">
-      <h1 className="text-2xl text-center mb-2">
-        {date.toLocaleString("default", { month: "long" }) +
-          " " +
-          "Liabilities and Budget"}
-      </h1>
-      {showError && (
-        <div
-          className={`text-foreground bg-secondary p-2 rounded mb-4 transition-opacity duration-500 ${!showError ? "opacity-0" : "opacity-100"}`}
-        >
-          {globalError}
-        </div>
-      )}
-      <h2 className="text-xl text-center mb-2">
-        {isPendingBudget ? (
-          <span>Getting Budget to load...</span>
-        ) : (
-          <>
-            {getBudget?.budget.length === 0 ? (
-              <form
-                className="max-w-sm m-auto"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  form.handleSubmit();
-                }}
-              >
-                <div key={defaultBudget.id}>
-                  <Paragraph
-                    className="text-white text-2xl"
-                    editable={{ onChange: handleChange }}
-                    onBlur={() => form.handleSubmit()}
-                    // onClick={() => form.handleSubmit()}
-                  >
-                    {defaultBudget.limit}
-                  </Paragraph>
-                </div>
-              </form>
-            ) : (
-              getBudget.budget.map((budget) => (
-                <form
-                  key={budget.id}
-                  className="max-w-sm m-auto"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    form.handleSubmit();
-                  }}
-                >
-                  <div>
-                    <Paragraph
-                      className="text-white text-2xl"
-                      editable={{ onChange: handleChange }}
-                      onBlur={() => form.handleSubmit()}
-                    >
-                      {updateBudgetMutation.isPending
-                        ? "Updating Budget..."
-                        : budget.limit}
-                    </Paragraph>
-                  </div>
-                </form>
-              ))
-            )}
-          </>
-        )}
-      </h2>
-
-      <Table>
-        <TableCaption>A list of all Liabilities</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Id</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
-            <TableHead className="w-[50px]">
-              <div className="flex justify-center">
-                <DeleteLiabilitiesButton />
-              </div>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isPendingLiabilities
-            ? Array(5)
-                .fill(0)
-                .map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="font-medium">
-                      <Skeleton className="h-4" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4" />
-                    </TableCell>
-                  </TableRow>
-                ))
-            : liabilitiesData?.liabilities.map((liability) => (
-                <TableRow
-                  key={liability.id}
-                  className={
-                    selectedIds.has(liability.id) ? "bg-slate-800" : ""
-                  }
-                >
-                  <TableCell className="font-medium">{liability.id}</TableCell>
-                  <TableCell
-                    onClick={() => handleClickId(liability.id)}
-                    className="hover:text-[#e1d6d6] hover:underline"
-                  >
-                    {liability.title}
-                  </TableCell>
-                  <TableCell>{liability.date.split("T")[0]}</TableCell>
-                  <TableCell className="text-right">
-                    {liability.amount}
-                  </TableCell>
-                  <TableCell>
-                    <Checkbox
-                      id={liability.id.toString()}
-                      className="flex ml-[0.8rem] [&.active]:"
-                      onCheckedChange={(isChecked) =>
-                        handleCheckboxChange(liability.id, !!isChecked)
-                      }
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total Liabilities Spent</TableCell>
-            <TableCell className="text-right">
-              {isPendingTotal ? "Loading..." : totalDrainedData.total}
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+    <div>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
@@ -397,7 +258,9 @@ function Liabilities() {
               <div className="flex flex-col items-center">
                 <span
                   className="text-3xl font-bold text-gray-800 mb-1"
-                  style={{ textShadow: "1px 1px 2px rgba(255, 255, 255, 0.7)" }}
+                  style={{
+                    textShadow: "1px 1px 2px rgba(255, 255, 255, 0.7)",
+                  }}
                 >
                   📅
                 </span>
@@ -410,12 +273,194 @@ function Liabilities() {
               </div>
             </div>
           </TooltipTrigger>
-
           <TooltipContent className="w-100 h-100 p-0">
             <LiabilitiesHistory isTooltip={true} />
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
+      <div className="p-2 max- max-w-4xl m-auto">
+        <h1 className="text-2xl text-center mb-2">
+          {date.toLocaleString("default", { month: "long" }) +
+            " " +
+            "Liabilities and Budget"}
+        </h1>
+        {showError && (
+          <div
+            className={`text-foreground bg-secondary p-2 rounded mb-4 transition-opacity duration-500 ${!showError ? "opacity-0" : "opacity-100"}`}
+          >
+            {globalError}
+          </div>
+        )}
+        <h2 className="text-xl text-center mb-2">
+          {isPendingBudget ? (
+            <span>Getting Budget to load...</span>
+          ) : (
+            <>
+              {getBudget?.budget.length === 0 ? (
+                <form
+                  className="max-w-sm m-auto"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.handleSubmit();
+                  }}
+                >
+                  <div key={defaultBudget.id}>
+                    <Paragraph
+                      className="text-white
+                      text-2xl"
+                      editable={{ onChange: handleChange }}
+                      onBlur={() => form.handleSubmit()}
+                      // onClick={() => form.handleSubmit()}
+                    >
+                      {defaultBudget.limit}
+                    </Paragraph>
+                  </div>
+                </form>
+              ) : (
+                getBudget.budget.map((budget) => (
+                  <form
+                    key={budget.id}
+                    className="max-w-sm m-auto"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      form.handleSubmit();
+                    }}
+                  >
+                    <div>
+                      <Paragraph
+                        className="text-white text-2xl"
+                        editable={{
+                          onChange: handleChange,
+                          icon: <EditTwoTone twoToneColor="#7A7A7A" />,
+                        }}
+                        onBlur={() => form.handleSubmit()}
+                      >
+                        {updateBudgetMutation.isPending
+                          ? "Updating Budget..."
+                          : budget.limit}
+                      </Paragraph>
+                    </div>
+                  </form>
+                ))
+              )}
+            </>
+          )}
+        </h2>
+        {/* <div className="flex items-center justify-between">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <div
+                className="w-50 h-30 p-2 flex items-center justify-center rounded-md transition-all duration-200 cursor-pointer"
+                style={{
+                  background:
+                    "linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.9))", // Soft white gradient
+                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)", // Subtle shadow for depth
+                  border: "1px solid rgba(200, 200, 200, 0.5)", // Optional border for definition
+                }}
+              >
+                <div className="flex flex-col items-center">
+                  <span
+                    className="text-3xl font-bold text-gray-800 mb-1"
+                    style={{
+                      textShadow: "1px 1px 2px rgba(255, 255, 255, 0.7)",
+                    }}
+                  >
+                    📅
+                  </span>
+                  <span
+                    className="font-semibold text-gray-900 text-lg"
+                    style={{ letterSpacing: "0.5px" }}
+                  >
+                    September History
+                  </span>
+                </div>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="w-100 h-100 p-0">
+              <LiabilitiesHistory isTooltip={true} />
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider> */}
+        <Table>
+          <TableCaption>A list of all Liabilities</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Id</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+              <TableHead className="w-[50px]">
+                <div className="flex justify-center">
+                  <DeleteLiabilitiesButton />
+                </div>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isPendingLiabilities
+              ? Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="font-medium">
+                        <Skeleton className="h-4" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4" />
+                      </TableCell>
+                    </TableRow>
+                  ))
+              : liabilitiesData?.liabilities.map((liability) => (
+                  <TableRow
+                    key={liability.id}
+                    className={
+                      selectedIds.has(liability.id) ? "bg-slate-800" : ""
+                    }
+                  >
+                    <TableCell className="font-medium">
+                      {liability.id}
+                    </TableCell>
+                    <TableCell
+                      onClick={() => handleClickId(liability.id)}
+                      className="hover:text-[#e1d6d6] hover:underline"
+                    >
+                      {liability.title}
+                    </TableCell>
+                    <TableCell>{liability.date.split("T")[0]}</TableCell>
+                    <TableCell className="text-right">
+                      {liability.amount}
+                    </TableCell>
+                    <TableCell>
+                      <Checkbox
+                        id={liability.id.toString()}
+                        className="flex ml-[0.8rem] [&.active]:"
+                        onCheckedChange={(isChecked) =>
+                          handleCheckboxChange(liability.id, !!isChecked)
+                        }
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={3}>Total Liabilities Spent</TableCell>
+              <TableCell className="text-right">
+                {isPendingTotal ? "Loading..." : totalDrainedData.total}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </div>
     </div>
   );
 }

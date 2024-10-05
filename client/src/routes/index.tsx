@@ -6,7 +6,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="flex flex-col justify-center items-center bg-popover text-center p-6">
+    <div className="flex flex-col justify-center items-center text-center p-6">
       <img src={logoTrackNStock} className="mb-2" />
       <p className="text-lg break-words whitespace-pre-wrap text-profound">
         Stay on top of your personal and business finances with our

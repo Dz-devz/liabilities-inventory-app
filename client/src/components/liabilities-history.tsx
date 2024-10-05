@@ -24,8 +24,13 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
     data: totalDrainedData,
   } = useQuery(drainedQuery);
 
-  if (errorLiabilitiesHistory) {
-    return "Error can't connect to " + errorLiabilitiesHistory.message;
+  if (errorLiabilitiesHistory || errorTotal) {
+    return (
+      "Error can't connect to " +
+      errorLiabilitiesHistory?.message +
+      " " +
+      errorTotal?.message
+    );
   }
   const date: Date = new Date();
 
@@ -97,9 +102,7 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
           <TableRow>
             <TableCell colSpan={3}>Total Liabilities Spent</TableCell>
             <TableCell className="text-right">
-              {isPendingLiabilitiesHistory
-                ? "Loading..."
-                : totalDrainedData?.total}
+              {isPendingTotal ? "Loading..." : totalDrainedData?.total}
             </TableCell>
           </TableRow>
         </TableFooter>
