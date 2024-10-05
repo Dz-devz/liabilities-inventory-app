@@ -31,6 +31,12 @@ export const liabilitiesQuery = queryOptions({
   staleTime: 60 * 60 * 1000,
 });
 
+export const liabilitiesHistoryQuery = queryOptions({
+  queryKey: ["get-liabilities-history"],
+  queryFn: getLiabilitiesHistoryDate,
+  staleTime: 60 * 60 * 1000,
+});
+
 export const drainedQuery = queryOptions({
   queryKey: ["get-total-drained"],
   queryFn: getTotalDrained,
@@ -53,6 +59,15 @@ export const limitQuery = queryOptions({
 //     queryFn: () => getSingleLiabilities({ id: id }),
 //     staleTime: 60 * 60 * 1000,
 //   });
+
+export async function getLiabilitiesHistoryDate() {
+  const res = await api.liabilities["getLiabilitiesHistoryDate"].$get();
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+  const data = await res.json();
+  return data;
+}
 
 export async function updateBudget({
   id,

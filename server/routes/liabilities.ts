@@ -46,6 +46,18 @@ export const liabilitiesRoute = new Hono()
 
     return c.json({ liabilities: liabilities });
   })
+  .get("/getLiabilitiesHistoryDate", getProfile, async (c) => {
+    const user = c.var.user;
+
+    const liabilities = await db
+      .select()
+      .from(liabilitiesTable)
+      .where(eq(liabilitiesTable.userId, user.id))
+      .orderBy(desc(liabilitiesTable.createdAt))
+      .limit(100);
+
+    return c.json({ liabilities: liabilities });
+  })
   .get("/:id{[0-9]+}", getProfile, async (c) => {
     const user = c.var.user;
     const id = Number.parseInt(c.req.param("id"));
