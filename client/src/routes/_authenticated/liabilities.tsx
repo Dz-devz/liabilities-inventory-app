@@ -1,3 +1,4 @@
+import LiabilitiesHistory from "@/components/liabilities-history";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -373,6 +374,7 @@ function Liabilities() {
           </TableRow>
         </TableFooter>
       </Table>
+      <LiabilitiesHistory />
     </div>
   );
 }

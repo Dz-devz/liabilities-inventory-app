@@ -53,7 +53,9 @@ function CreateLiabilities() {
 
         navigate({ to: "/liabilities" });
       } catch (error) {
-        setGlobalError("Cannot create more liabilities, budget exceeded. ");
+        setGlobalError(
+          "Cannot create more liabilities, budget exceeded or no budget was found"
+        );
         setShowError(true);
 
         setTimeout(() => {

@@ -78,7 +78,13 @@ export const liabilitiesRoute = new Hono()
     const liabilities = await db
       .select()
       .from(liabilitiesTable)
-      .where(eq(liabilitiesTable.userId, user.id))
+      .where(
+        and(
+          eq(liabilitiesTable.userId, user.id),
+          gte(liabilitiesTable.createdAt, startOfMonth),
+          lt(liabilitiesTable.createdAt, endOfMonth)
+        )
+      )
       .orderBy(desc(liabilitiesTable.createdAt))
       .limit(100);
 
