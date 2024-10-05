@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as LiabilitiesHistoryImport } from './routes/liabilities-history'
 import { Route as AboutImport } from './routes/about'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as IndexImport } from './routes/index'
@@ -20,6 +21,11 @@ import { Route as AuthenticatedLiabilitiesImport } from './routes/_authenticated
 import { Route as AuthenticatedCreateLiabilitiesImport } from './routes/_authenticated/create-liabilities'
 
 // Create/Update Routes
+
+const LiabilitiesHistoryRoute = LiabilitiesHistoryImport.update({
+  path: '/liabilities-history',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AboutRoute = AboutImport.update({
   path: '/about',
@@ -82,6 +88,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/liabilities-history': {
+      id: '/liabilities-history'
+      path: '/liabilities-history'
+      fullPath: '/liabilities-history'
+      preLoaderRoute: typeof LiabilitiesHistoryImport
+      parentRoute: typeof rootRoute
+    }
     '/_authenticated/create-liabilities': {
       id: '/_authenticated/create-liabilities'
       path: '/create-liabilities'
@@ -135,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
+  '/liabilities-history': typeof LiabilitiesHistoryRoute
   '/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
   '/liabilities': typeof AuthenticatedLiabilitiesRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -145,6 +159,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
+  '/liabilities-history': typeof LiabilitiesHistoryRoute
   '/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
   '/liabilities': typeof AuthenticatedLiabilitiesRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -156,6 +171,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
+  '/liabilities-history': typeof LiabilitiesHistoryRoute
   '/_authenticated/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
   '/_authenticated/liabilities': typeof AuthenticatedLiabilitiesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -168,6 +184,7 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/about'
+    | '/liabilities-history'
     | '/create-liabilities'
     | '/liabilities'
     | '/profile'
@@ -177,6 +194,7 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/about'
+    | '/liabilities-history'
     | '/create-liabilities'
     | '/liabilities'
     | '/profile'
@@ -186,6 +204,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/about'
+    | '/liabilities-history'
     | '/_authenticated/create-liabilities'
     | '/_authenticated/liabilities'
     | '/_authenticated/profile'
@@ -197,6 +216,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AboutRoute: typeof AboutRoute
+  LiabilitiesHistoryRoute: typeof LiabilitiesHistoryRoute
   LiabilitiesIdRoute: typeof LiabilitiesIdRoute
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AboutRoute: AboutRoute,
+  LiabilitiesHistoryRoute: LiabilitiesHistoryRoute,
   LiabilitiesIdRoute: LiabilitiesIdRoute,
 }
 
@@ -222,6 +243,7 @@ export const routeTree = rootRoute
         "/",
         "/_authenticated",
         "/about",
+        "/liabilities-history",
         "/liabilities/$id"
       ]
     },
@@ -238,6 +260,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/liabilities-history": {
+      "filePath": "liabilities-history.tsx"
     },
     "/_authenticated/create-liabilities": {
       "filePath": "_authenticated/create-liabilities.tsx",

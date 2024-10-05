@@ -1,4 +1,3 @@
-import LiabilitiesHistory from "@/components/liabilities-history";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,10 +25,11 @@ import {
   liabilitiesQuery,
   updateBudget,
 } from "@/lib/api";
+import LiabilitiesHistory from "@/routes/liabilities-history";
 import { EditTwoTone } from "@ant-design/icons";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { Typography } from "antd";
 import { TrashIcon } from "lucide-react";
@@ -245,34 +245,36 @@ function Liabilities() {
     <div>
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
-            <div
-              className="w-50 h-30 p-2 flex items-center justify-center rounded-md transition-all duration-200 cursor-pointer"
-              style={{
-                background:
-                  "linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.9))", // Soft white gradient
-                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)", // Subtle shadow for depth
-                border: "1px solid rgba(200, 200, 200, 0.5)", // Optional border for definition
-              }}
-            >
-              <div className="flex flex-col items-center">
-                <span
-                  className="text-3xl font-bold text-gray-800 mb-1"
-                  style={{
-                    textShadow: "1px 1px 2px rgba(255, 255, 255, 0.7)",
-                  }}
-                >
-                  📅
-                </span>
-                <span
-                  className="font-semibold text-gray-900 text-lg"
-                  style={{ letterSpacing: "0.5px" }}
-                >
-                  September History
-                </span>
+          <Link to="/liabilities-history">
+            <TooltipTrigger>
+              <div
+                className="w-50 h-30 p-2 flex items-center justify-center rounded-md transition-all duration-200 cursor-pointer"
+                style={{
+                  background:
+                    "linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.9))", // Soft white gradient
+                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)", // Subtle shadow for depth
+                  border: "1px solid rgba(200, 200, 200, 0.5)", // Optional border for definition
+                }}
+              >
+                <div className="flex flex-col items-center">
+                  <span
+                    className="text-3xl font-bold text-gray-800 mb-1"
+                    style={{
+                      textShadow: "1px 1px 2px rgba(255, 255, 255, 0.7)",
+                    }}
+                  >
+                    📅
+                  </span>
+                  <span
+                    className="font-semibold text-gray-900 text-lg"
+                    style={{ letterSpacing: "0.5px" }}
+                  >
+                    September History
+                  </span>
+                </div>
               </div>
-            </div>
-          </TooltipTrigger>
+            </TooltipTrigger>
+          </Link>
           <TooltipContent className="w-100 h-100 p-0">
             <LiabilitiesHistory isTooltip={true} />
           </TooltipContent>

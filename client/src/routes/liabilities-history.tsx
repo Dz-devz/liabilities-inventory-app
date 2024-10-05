@@ -9,8 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { drainedQuery, liabilitiesHistoryQuery } from "@/lib/api";
+import { budgetQuery, drainedQuery, liabilitiesHistoryQuery } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/liabilities-history")({
+  component: LiabilitiesHistory,
+});
 
 export default function LiabilitiesHistory({ isTooltip = false }) {
   const {
@@ -23,13 +28,20 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
     error: errorTotal,
     data: totalDrainedData,
   } = useQuery(drainedQuery);
+  const {
+    isPending: isPendingBudget,
+    error: errorBudget,
+    data: totalBudgetData,
+  } = useQuery(budgetQuery);
 
-  if (errorLiabilitiesHistory || errorTotal) {
+  if (errorLiabilitiesHistory || errorTotal || errorBudget) {
     return (
       "Error can't connect to " +
       errorLiabilitiesHistory?.message +
       " " +
-      errorTotal?.message
+      errorTotal?.message +
+      " " +
+      errorBudget?.message
     );
   }
   const date: Date = new Date();
@@ -42,7 +54,13 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
         {date.toLocaleString("default", { month: "long" }) +
           " Liabilities and Budget"}
       </h1>
-
+      {totalBudgetData?.budget.map((budget) => (
+        <p
+          className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
+        >
+          {isPendingBudget ? "Getting Budget..." : budget.limit}
+        </p>
+      ))}
       <Table className={isTooltip ? "text-sm" : ""}>
         <TableCaption>A list of all Liabilities</TableCaption>
         <TableHeader>
