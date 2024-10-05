@@ -26,13 +26,13 @@ const getStartAndEndOfMonth = (date: Date) => {
   return { startOfMonth, endOfMonth };
 };
 
+// Get current date and month name
+const now = new Date();
+const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
+
 export const budgetRoute = new Hono()
   .get("/", getProfile, async (c) => {
     const user = c.var.user;
-
-    // Get current date and month name
-    const now = new Date();
-    const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
 
     // Query budgets for the current month
     const budget = await db
@@ -99,9 +99,6 @@ export const budgetRoute = new Hono()
     const id = Number.parseInt(c.req.param("id"));
     const { limit } = await c.req.json();
 
-    const now = new Date();
-    const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
-
     const liabilities = await db
       .select()
       .from(liabilitiesTable)
@@ -153,10 +150,6 @@ export const budgetRoute = new Hono()
   })
   .get("/limit", getProfile, async (c) => {
     const user = c.var.user;
-
-    // Get current date and month name
-    const now = new Date();
-    const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
 
     // Query budgets for the current month
     const budgetResult = await db

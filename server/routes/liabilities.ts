@@ -24,6 +24,9 @@ const getStartAndEndOfMonth = (date: Date) => {
   return { startOfMonth, endOfMonth };
 };
 
+const now = new Date();
+const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
+
 export const liabilitiesRoute = new Hono()
   .get("/", getProfile, async (c) => {
     const user = c.var.user;
@@ -31,7 +34,13 @@ export const liabilitiesRoute = new Hono()
     const liabilities = await db
       .select()
       .from(liabilitiesTable)
-      .where(eq(liabilitiesTable.userId, user.id))
+      .where(
+        and(
+          eq(liabilitiesTable.userId, user.id),
+          gte(liabilitiesTable.createdAt, startOfMonth),
+          lt(liabilitiesTable.createdAt, endOfMonth)
+        )
+      )
       .orderBy(desc(liabilitiesTable.createdAt))
       .limit(100);
 
@@ -53,9 +62,6 @@ export const liabilitiesRoute = new Hono()
   .post("/", getProfile, zValidator("json", liabilitiesSchema), async (c) => {
     const data = await c.req.valid("json");
     const user = c.var.user;
-
-    const now = new Date();
-    const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
 
     const budgets = await db
       .select({ limit: budgetTable.limit })
@@ -111,7 +117,13 @@ export const liabilitiesRoute = new Hono()
     const result = await db
       .select({ total: sum(liabilitiesTable.amount) })
       .from(liabilitiesTable)
-      .where(eq(liabilitiesTable.userId, user.id))
+      .where(
+        and(
+          eq(liabilitiesTable.userId, user.id),
+          gte(liabilitiesTable.createdAt, startOfMonth),
+          lt(liabilitiesTable.createdAt, endOfMonth)
+        )
+      )
       .limit(1)
       .then((res) => res[0]);
     return c.json(result);

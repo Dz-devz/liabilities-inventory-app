@@ -49,9 +49,9 @@ function NavLinks() {
         to="/create-liabilities"
         className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
       >
-        Create Liabilities
+        Create Liability
       </Link>
-      {!isAuthenticated ? (
+      {isAuthenticated ? (
         <a
           className="block py-2 px-3 rounded hover:bg-popover"
           href="/api/logout"

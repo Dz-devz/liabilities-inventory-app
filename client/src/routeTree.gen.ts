@@ -18,7 +18,6 @@ import { Route as LiabilitiesIdImport } from './routes/liabilities.$id'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedLiabilitiesImport } from './routes/_authenticated/liabilities'
 import { Route as AuthenticatedCreateLiabilitiesImport } from './routes/_authenticated/create-liabilities'
-import { Route as AuthenticatedCreateBudgetImport } from './routes/_authenticated/create-budget'
 
 // Create/Update Routes
 
@@ -58,11 +57,6 @@ const AuthenticatedCreateLiabilitiesRoute =
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
-const AuthenticatedCreateBudgetRoute = AuthenticatedCreateBudgetImport.update({
-  path: '/create-budget',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -87,13 +81,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/about'
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
-    }
-    '/_authenticated/create-budget': {
-      id: '/_authenticated/create-budget'
-      path: '/create-budget'
-      fullPath: '/create-budget'
-      preLoaderRoute: typeof AuthenticatedCreateBudgetImport
-      parentRoute: typeof AuthenticatedImport
     }
     '/_authenticated/create-liabilities': {
       id: '/_authenticated/create-liabilities'
@@ -129,14 +116,12 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedCreateBudgetRoute: typeof AuthenticatedCreateBudgetRoute
   AuthenticatedCreateLiabilitiesRoute: typeof AuthenticatedCreateLiabilitiesRoute
   AuthenticatedLiabilitiesRoute: typeof AuthenticatedLiabilitiesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedCreateBudgetRoute: AuthenticatedCreateBudgetRoute,
   AuthenticatedCreateLiabilitiesRoute: AuthenticatedCreateLiabilitiesRoute,
   AuthenticatedLiabilitiesRoute: AuthenticatedLiabilitiesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
@@ -150,7 +135,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
-  '/create-budget': typeof AuthenticatedCreateBudgetRoute
   '/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
   '/liabilities': typeof AuthenticatedLiabilitiesRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -161,7 +145,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
-  '/create-budget': typeof AuthenticatedCreateBudgetRoute
   '/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
   '/liabilities': typeof AuthenticatedLiabilitiesRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -173,7 +156,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
-  '/_authenticated/create-budget': typeof AuthenticatedCreateBudgetRoute
   '/_authenticated/create-liabilities': typeof AuthenticatedCreateLiabilitiesRoute
   '/_authenticated/liabilities': typeof AuthenticatedLiabilitiesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -186,7 +168,6 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/about'
-    | '/create-budget'
     | '/create-liabilities'
     | '/liabilities'
     | '/profile'
@@ -196,7 +177,6 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/about'
-    | '/create-budget'
     | '/create-liabilities'
     | '/liabilities'
     | '/profile'
@@ -206,7 +186,6 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/about'
-    | '/_authenticated/create-budget'
     | '/_authenticated/create-liabilities'
     | '/_authenticated/liabilities'
     | '/_authenticated/profile'
@@ -252,7 +231,6 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
-        "/_authenticated/create-budget",
         "/_authenticated/create-liabilities",
         "/_authenticated/liabilities",
         "/_authenticated/profile"
@@ -260,10 +238,6 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
-    },
-    "/_authenticated/create-budget": {
-      "filePath": "_authenticated/create-budget.tsx",
-      "parent": "/_authenticated"
     },
     "/_authenticated/create-liabilities": {
       "filePath": "_authenticated/create-liabilities.tsx",
