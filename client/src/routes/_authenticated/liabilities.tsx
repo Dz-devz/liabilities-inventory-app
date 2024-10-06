@@ -43,6 +43,7 @@ function Liabilities() {
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [selectAll, setSelectAll] = useState<boolean>();
   const [editableStr, setEditableStr] = useState("");
   const { Paragraph } = Typography;
   const [globalError, setGlobalError] = useState<string>("");
@@ -200,6 +201,19 @@ function Liabilities() {
     });
   };
 
+  const handleSelectAllChange = (isChecked: boolean) => {
+    if (isChecked) {
+      const allIds = new Set(
+        liabilitiesData?.liabilities.map((liability) => liability.id)
+      );
+      setSelectedIds(allIds);
+      setSelectAll(true);
+    } else {
+      setSelectedIds(new Set());
+      setSelectAll(false);
+    }
+  };
+
   function DeleteLiabilitiesButton() {
     const queryClient = useQueryClient();
     const mutation = useMutation({
@@ -238,6 +252,9 @@ function Liabilities() {
     id: 0,
     limit: 0,
   };
+  const allLiabilityIds = new Set(
+    liabilitiesData?.liabilities.map((liability) => liability.id)
+  );
 
   const isDeleteButtonVisible = selectedIds.size > 0;
   const date: Date = new Date();
@@ -442,13 +459,24 @@ function Liabilities() {
                       {liability.amount}
                     </TableCell>
                     <TableCell>
-                      <Checkbox
-                        id={liability.id.toString()}
-                        className="flex ml-[0.8rem] [&.active]:"
-                        onCheckedChange={(isChecked) =>
-                          handleCheckboxChange(liability.id, !!isChecked)
-                        }
-                      />
+                      {selectAll ? (
+                        <Checkbox
+                          checked={selectedIds.has(liability.id)}
+                          id={liability.id.toString()}
+                          className="flex ml-[0.8rem]"
+                          onCheckedChange={(isChecked) =>
+                            handleCheckboxChange(liability.id, !!isChecked)
+                          }
+                        />
+                      ) : (
+                        <Checkbox
+                          id={liability.id.toString()}
+                          className="flex ml-[0.8rem]"
+                          onCheckedChange={(isChecked) =>
+                            handleCheckboxChange(liability.id, !!isChecked)
+                          }
+                        />
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -458,6 +486,13 @@ function Liabilities() {
               <TableCell colSpan={3}>Total Liabilities Spent</TableCell>
               <TableCell className="text-right">
                 {isPendingTotal ? "Loading..." : totalDrainedData.total}
+              </TableCell>
+              <TableCell>
+                <Checkbox
+                  checked={selectedIds.size === allLiabilityIds.size}
+                  className="flex ml-[0.8rem]"
+                  onCheckedChange={handleSelectAllChange}
+                />
               </TableCell>
             </TableRow>
           </TableFooter>
