@@ -25,8 +25,9 @@ function Profile() {
 
   const remainingBudget = Number(budgetD) - Number(totalLiabilitiesData?.total);
 
-  if (isPending) return "Loading...";
-  if (error) return "Not Logged In";
+  if (isPending || isPendingTotalLiabilities || isPendingBudget)
+    return "Loading...";
+  if (error || errorTotalLiabilities || errorBudget) return "Not Logged In";
 
   return (
     <div className="p-4 space-y-4">
