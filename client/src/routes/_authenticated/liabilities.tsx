@@ -256,6 +256,11 @@ function Liabilities() {
     liabilitiesData?.liabilities.map((liability) => liability.id)
   );
 
+  const budget = getBudget?.budget[0];
+  const budgetD = budget?.limit;
+
+  const remainingBudget = Number(budgetD) - Number(totalDrainedData?.total);
+
   const isDeleteButtonVisible = selectedIds.size > 0;
   const date: Date = new Date();
   return (
@@ -297,7 +302,7 @@ function Liabilities() {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <div className="p-2 max- max-w-4xl m-auto">
+      <div className="p-2 max-w-4xl m-auto">
         <h1 className="text-2xl text-center mb-2">
           {date.toLocaleString("default", { month: "long" }) +
             " " +
@@ -404,7 +409,16 @@ function Liabilities() {
           </Tooltip>
         </TooltipProvider> */}
         <Table>
-          <TableCaption>A list of all Liabilities</TableCaption>
+          <TableCaption>
+            {" "}
+            <h2 className="text-xl text-center mb-2">
+              {date.toLocaleString("default", { month: "long" })} Remaining
+              Balance:{" "}
+              {isPendingBudget
+                ? "Getting Remaining Budget..."
+                : remainingBudget}
+            </h2>
+          </TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Id</TableHead>
