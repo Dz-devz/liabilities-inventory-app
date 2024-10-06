@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { profileQuery } from "../../lib/api";
+import { budgetQuery, drainedQuery, profileQuery } from "../../lib/api";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   component: Profile,
@@ -9,6 +9,21 @@ export const Route = createFileRoute("/_authenticated/profile")({
 
 function Profile() {
   const { isPending, error, data } = useQuery(profileQuery);
+  const {
+    isPending: isPendingTotalLiabilities,
+    error: errorTotalLiabilities,
+    data: totalLiabilitiesData,
+  } = useQuery(drainedQuery);
+  const {
+    isPending: isPendingBudget,
+    error: errorBudget,
+    data: budgetData,
+  } = useQuery(budgetQuery);
+
+  const budget = budgetData?.budget[0];
+  const budgetD = budget?.limit;
+
+  const remainingBudget = Number(budgetD) - Number(totalLiabilitiesData?.total);
 
   if (isPending) return "Loading...";
   if (error) return "Not Logged In";
@@ -30,25 +45,16 @@ function Profile() {
           <p className="text-2xl font-semibold">
             {data.user.given_name} {data.user.family_name}
           </p>
-          <p className="text-sm">{data.user.email}</p>
         </div>
-      </div>
-      <div>
-        <h2 className="text-xl font-bold">Profile Details</h2>
-        <ul className="space-y-1">
-          <li>
-            <strong>Email:</strong> {data.user.email}
-          </li>
-        </ul>
       </div>
       <div>
         <h2 className="text-xl font-bold">Liability Stats</h2>
         <ul className="space-y-1">
           <li>
-            <strong>Total Liabilities:</strong> $X,XXX
+            <strong>Total Liabilities:</strong> ₱{totalLiabilitiesData?.total}
           </li>
           <li>
-            <strong>Remaining Budget:</strong> $X,XXX
+            <strong>Remaining Budget:</strong> ₱{remainingBudget}
           </li>
         </ul>
       </div>
