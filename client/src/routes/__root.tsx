@@ -50,6 +50,14 @@ function NavLinks() {
       >
         Create Liability
       </Link>
+      <div className="flex-grow"></div>
+
+      <a
+        className="block py-2 px-3 rounded hover:bg-popover"
+        href="/api/logout"
+      >
+        Logout
+      </a>
       {/* {isAuthenticated ? (
         <a
           className="block py-2 px-3 rounded hover:bg-popover"
