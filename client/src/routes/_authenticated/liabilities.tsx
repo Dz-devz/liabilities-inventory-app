@@ -263,6 +263,8 @@ function Liabilities() {
 
   const isDeleteButtonVisible = selectedIds.size > 0;
   const date: Date = new Date();
+  date.setMonth(date.getMonth() - 1); // Subtract one month
+  const pastMonth = date.toLocaleString("default", { month: "long" });
   return (
     <div>
       <TooltipProvider>
@@ -271,11 +273,12 @@ function Liabilities() {
             <TooltipTrigger>
               <div
                 className="w-50 h-30 p-2 flex items-center justify-center rounded-md transition-all duration-200 cursor-pointer"
+                //gradient style
                 style={{
                   background:
-                    "linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.9))", // Soft white gradient
-                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)", // Subtle shadow for depth
-                  border: "1px solid rgba(200, 200, 200, 0.5)", // Optional border for definition
+                    "linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.9))",
+                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)",
+                  border: "1px solid rgba(200, 200, 200, 0.5)",
                 }}
               >
                 <div className="flex flex-col items-center">
@@ -291,7 +294,7 @@ function Liabilities() {
                     className="font-semibold text-gray-900 text-lg"
                     style={{ letterSpacing: "0.5px" }}
                   >
-                    September History
+                    {pastMonth} History
                   </span>
                 </div>
               </div>
