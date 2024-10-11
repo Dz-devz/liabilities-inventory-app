@@ -45,9 +45,8 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
     );
   }
   const date: Date = new Date(); // Date
-  const currentMonth = date.getMonth(); // Current month (0-11)
   let year = date.getFullYear();
-  let pastMonth = date.getMonth() - 1;
+  let pastMonth = date.getMonth() - 1; // past month
 
   if (pastMonth < 0) {
     pastMonth = 11; // December
