@@ -44,15 +44,22 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
       errorBudget?.message
     );
   }
-  const date: Date = new Date();
+  const date: Date = new Date(); // Date
+  const currentMonth = date.getMonth(); // Current month (0-11)
+  let year = date.getFullYear();
+  let pastMonth = date.getMonth() - 1;
+
+  if (pastMonth < 0) {
+    pastMonth = 11; // December
+    year--; // Move to the previous year
+  }
 
   return (
     <div className={`p-2 ${isTooltip ? "max-w-full" : "max-w-4xl"} m-auto`}>
       <h1
         className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
       >
-        {date.toLocaleString("default", { month: "long" }) +
-          " Liabilities and Budget"}
+        {pastMonth + " Liabilities and Budget"}
       </h1>
       {totalBudgetData?.budget.map((budget) => (
         <p
@@ -97,10 +104,16 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
                     </TableCell>
                   </TableRow>
                 ))
-            : liabilitiesDataHistory?.liabilities.slice(0, 3).map(
-                (
-                  liability // Limited to 3 rows
-                ) => (
+            : liabilitiesDataHistory?.liabilities
+                .filter((liability) => {
+                  const liabilityDate = new Date(liability.date);
+                  return (
+                    liabilityDate.getMonth() === pastMonth && // Compare month
+                    liabilityDate.getFullYear() === year // Compare year
+                  );
+                })
+                .slice(0, 10) // Limit to 3 rows
+                .map((liability) => (
                   <TableRow key={liability.id}>
                     <TableCell className="font-medium">
                       {liability.id}
@@ -113,8 +126,7 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
                       {liability.amount}
                     </TableCell>
                   </TableRow>
-                )
-              )}
+                ))}
         </TableBody>
         <TableFooter>
           <TableRow>

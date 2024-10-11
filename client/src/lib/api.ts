@@ -61,7 +61,7 @@ export const limitQuery = queryOptions({
 //   });
 
 export async function getLiabilitiesHistoryDate() {
-  const res = await api.liabilities["getLiabilitiesHistoryDate"].$get();
+  const res = await api.liabilities["liabilities-history-date"].$get();
   if (!res.ok) {
     throw new Error("Server error");
   }

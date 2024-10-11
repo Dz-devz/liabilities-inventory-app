@@ -263,6 +263,7 @@ function Liabilities() {
 
   const isDeleteButtonVisible = selectedIds.size > 0;
   const date: Date = new Date();
+  const d = new Date(); // current date
   date.setMonth(date.getMonth() - 1); // Subtract one month
   const pastMonth = date.toLocaleString("default", { month: "long" });
   return (
@@ -307,7 +308,7 @@ function Liabilities() {
       </TooltipProvider>
       <div className="p-2 max-w-4xl m-auto">
         <h1 className="text-2xl text-center mb-2">
-          {date.toLocaleString("default", { month: "long" }) +
+          {d.toLocaleString("default", { month: "long" }) +
             " " +
             "Liabilities and Budget"}
         </h1>

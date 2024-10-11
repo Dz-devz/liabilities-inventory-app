@@ -46,7 +46,7 @@ export const liabilitiesRoute = new Hono()
 
     return c.json({ liabilities: liabilities });
   })
-  .get("/getLiabilitiesHistoryDate", getProfile, async (c) => {
+  .get("/liabilities-history-date", getProfile, async (c) => {
     const user = c.var.user;
 
     const liabilities = await db
@@ -55,6 +55,8 @@ export const liabilitiesRoute = new Hono()
       .where(eq(liabilitiesTable.userId, user.id))
       .orderBy(desc(liabilitiesTable.createdAt))
       .limit(100);
+
+    console.log(liabilities);
 
     return c.json({ liabilities: liabilities });
   })
