@@ -141,6 +141,7 @@ function CreateLiabilities() {
               <PopoverTrigger asChild>
                 <div className="self-center mt-4">
                   <Button
+                    type="button"
                     variant="outline"
                     className={cn(
                       "w-[240px] pl-3 text-left font-normal",
