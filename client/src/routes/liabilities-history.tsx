@@ -44,9 +44,18 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
       errorBudget?.message
     );
   }
-  const date: Date = new Date(); // Date
+
+  const budget = totalBudgetData?.budget[0];
+  const budgetD = budget?.limit;
+
+  const remainingBudget = Number(budgetD) - Number(totalDrainedData?.total);
+
+  const date: Date = new Date();
+  const d: Date = new Date(); // Date
   let year = date.getFullYear();
-  let pastMonth = date.getMonth() - 1; // past month
+  let pastMonth = date.getMonth() - 1;
+  d.setMonth(d.getMonth() - 1); // past month
+  const past = d.toLocaleString("default", { month: "long" });
 
   if (pastMonth < 0) {
     pastMonth = 11; // December
@@ -58,7 +67,7 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
       <h1
         className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
       >
-        {pastMonth + " Liabilities and Budget"}
+        {past + " Liabilities and Budget"}
       </h1>
       {totalBudgetData?.budget.map((budget) => (
         <p
@@ -68,7 +77,17 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
         </p>
       ))}
       <Table className={isTooltip ? "text-sm" : ""}>
-        <TableCaption>A list of all Liabilities</TableCaption>
+        <TableCaption>
+          {d.toLocaleString("default", { month: "long" })} Remaining Balance:{" "}
+          {isPendingBudget ? (
+            "Getting Remaining Budget..."
+          ) : (
+            <span className="font-semibold text-white">
+              {" "}
+              {remainingBudget}{" "}
+            </span>
+          )}
+        </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className={`w-[80px] ${isTooltip ? "text-sm" : ""}`}>

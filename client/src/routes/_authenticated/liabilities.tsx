@@ -415,12 +415,17 @@ function Liabilities() {
         <Table>
           <TableCaption>
             {" "}
-            <h2 className="text-xl text-center mb-2">
+            <h2 className="text-xl text-center mb-2 ">
               {date.toLocaleString("default", { month: "long" })} Remaining
               Balance:{" "}
-              {isPendingBudget
-                ? "Getting Remaining Budget..."
-                : remainingBudget}
+              {isPendingBudget ? (
+                "Getting Remaining Budget..."
+              ) : (
+                <span className="font-semibold text-white">
+                  {" "}
+                  {remainingBudget}{" "}
+                </span>
+              )}
             </h2>
           </TableCaption>
           <TableHeader>
