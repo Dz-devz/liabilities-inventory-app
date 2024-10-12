@@ -22,31 +22,31 @@ function NavLinks() {
       <img src={logo} className="w-[60px] h-[60px]" />
       <Link
         to="/"
-        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold [&.active]:bg-popover"
       >
         Home
       </Link>
       <Link
         to="/about"
-        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold [&.active]:bg-popover"
       >
         About
       </Link>
       <Link
         to="/profile"
-        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold [&.active]:bg-popover"
       >
         Profile
       </Link>
       <Link
         to="/liabilities"
-        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold [&.active]:bg-popover"
       >
         Liabilities
       </Link>
       <Link
         to="/create-liabilities"
-        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold"
+        className="block py-2 px-3 rounded hover:bg-popover [&.active]:font-bold [&.active]:bg-popover"
       >
         Create Liability
       </Link>
@@ -54,7 +54,7 @@ function NavLinks() {
 
       <a
         className="block py-2 px-3 rounded hover:bg-popover"
-        href="/api/logout"
+        href="/api/logout [&.active]:bg-popover"
       >
         Logout
       </a>
