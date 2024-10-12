@@ -29,11 +29,10 @@ const monthNames = [
 const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
   return (
     <TooltipProvider>
-      <div className="flex flex-col space-y-2">
+      <div className="flex flex-row gap-4 m-2">
         {availableMonths.map((month, idx) => {
           const [monthNumber, year] = month.split(" ").map(Number);
           const monthName = monthNames[monthNumber - 1];
-
           return (
             <Tooltip key={idx}>
               <Link to={`/liabilities-history?month=${month}`}>
@@ -61,7 +60,6 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
                         style={{ letterSpacing: "0.5px" }}
                       >
                         {monthName} {year} History{" "}
-                        {/* Use monthName and year */}
                       </span>
                     </div>
                   </div>

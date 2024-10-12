@@ -260,12 +260,14 @@ function Liabilities() {
 
   const isDeleteButtonVisible = selectedIds.size > 0;
   const date: Date = new Date();
-  const d = new Date(); // current date
+  const d = new Date();
   date.setMonth(date.getMonth() - 1);
-  const availableMonths = dataAvailableMonths?.availableMonths || []; // Subtract one month
+  const availableMonths = dataAvailableMonths?.availableMonths || [];
   return (
     <div>
-      <TooltipHistory availableMonths={availableMonths} />
+      <div className="mr-auto">
+        <TooltipHistory availableMonths={availableMonths} />
+      </div>
       <div className="p-2 max-w-4xl m-auto">
         <h1 className="text-2xl text-center mb-2">
           {d.toLocaleString("default", { month: "long" }) +

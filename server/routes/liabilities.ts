@@ -21,8 +21,35 @@ const getStartAndEndOfMonth = (date: Date) => {
     59,
     999
   );
-  return { startOfMonth, endOfMonth };
+  return {
+    startOfMonth: startOfMonth.toISOString().split("T")[0],
+    endOfMonth: endOfMonth.toISOString().split("T")[0],
+  };
 };
+
+const getStartAndEndOfMonthTimeStamp = (date: Date) => {
+  // Start of the month at the beginning of the day
+  const startOfMonthTimeStamp = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    1
+  );
+  // End of the month at the end of the last day of the month
+  const endOfMonthTimeStamp = new Date(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    0
+  );
+
+  return {
+    startOfMonthTimeStamp,
+    endOfMonthTimeStamp,
+  };
+};
+
+// Call the function to get the date range
+const { startOfMonthTimeStamp, endOfMonthTimeStamp } =
+  getStartAndEndOfMonthTimeStamp(new Date());
 
 const now = new Date();
 const { startOfMonth, endOfMonth } = getStartAndEndOfMonth(now);
@@ -37,8 +64,8 @@ export const liabilitiesRoute = new Hono()
       .where(
         and(
           eq(liabilitiesTable.userId, user.id),
-          gte(liabilitiesTable.createdAt, startOfMonth),
-          lt(liabilitiesTable.createdAt, endOfMonth)
+          gte(liabilitiesTable.date, startOfMonth),
+          lt(liabilitiesTable.date, endOfMonth)
         )
       )
       .orderBy(desc(liabilitiesTable.createdAt))
@@ -113,8 +140,8 @@ export const liabilitiesRoute = new Hono()
       .where(
         and(
           eq(budgetTable.userId, user.id),
-          gte(budgetTable.createdAt, startOfMonth),
-          lt(budgetTable.createdAt, endOfMonth)
+          gte(budgetTable.createdAt, startOfMonthTimeStamp),
+          lt(budgetTable.createdAt, endOfMonthTimeStamp)
         )
       )
       .orderBy(desc(budgetTable.createdAt));
@@ -125,8 +152,8 @@ export const liabilitiesRoute = new Hono()
       .where(
         and(
           eq(liabilitiesTable.userId, user.id),
-          gte(liabilitiesTable.createdAt, startOfMonth),
-          lt(liabilitiesTable.createdAt, endOfMonth)
+          gte(liabilitiesTable.date, startOfMonth),
+          lt(liabilitiesTable.date, endOfMonth)
         )
       )
       .orderBy(desc(liabilitiesTable.createdAt))
@@ -170,8 +197,8 @@ export const liabilitiesRoute = new Hono()
       .where(
         and(
           eq(liabilitiesTable.userId, user.id),
-          gte(liabilitiesTable.createdAt, startOfMonth),
-          lt(liabilitiesTable.createdAt, endOfMonth)
+          gte(liabilitiesTable.date, startOfMonth),
+          lt(liabilitiesTable.date, endOfMonth)
         )
       )
       .limit(1)
