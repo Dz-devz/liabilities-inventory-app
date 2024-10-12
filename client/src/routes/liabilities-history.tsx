@@ -50,17 +50,21 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
 
   const remainingBudget = Number(budgetD) - Number(totalDrainedData?.total);
 
-  const date: Date = new Date();
+  // const date: Date = new Date();
   const d: Date = new Date(); // Date
-  let year = date.getFullYear();
-  let pastMonth = date.getMonth() - 1;
+  // let year = date.getFullYear();
+  // let pastMonth = date.getMonth() - 1;
   d.setMonth(d.getMonth() - 1); // past month
   const past = d.toLocaleString("default", { month: "long" });
 
-  if (pastMonth < 0) {
-    pastMonth = 11; // December
-    year--; // Move to the previous year
-  }
+  // if (pastMonth < 0) {
+  //   pastMonth = 11; // December
+  //   year--; // Move to the previous year
+  // }
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
 
   return (
     <div className={`p-2 ${isTooltip ? "max-w-full" : "max-w-4xl"} m-auto`}>
@@ -126,11 +130,11 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
                 .filter((liability) => {
                   const liabilityDate = new Date(liability.date);
                   return (
-                    liabilityDate.getMonth() === pastMonth && // Compare month
-                    liabilityDate.getFullYear() === year // Compare year
+                    liabilityDate.getMonth() < currentMonth && // Compare month
+                    liabilityDate.getFullYear() === currentYear // Compare year
                   );
                 })
-                .slice(0, 10) // Limit to 3 rows
+                .slice(0, 20) // Limit to 3 rows
                 .map((liability) => (
                   <TableRow key={liability.id}>
                     <TableCell className="font-medium">

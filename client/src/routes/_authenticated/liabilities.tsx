@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  availableMonthsQuery,
   budgetQuery,
   createBudget,
   deleteLiabilities,
@@ -177,8 +178,10 @@ function Liabilities() {
     error: errorBudget,
     data: getBudget,
   } = useQuery(budgetQuery);
+  const { error: errorAvailableMonths, data: dataAvailableMonths } =
+    useQuery(availableMonthsQuery);
 
-  if (errorLiabilities || errorTotal || errorBudget)
+  if (errorLiabilities || errorTotal || errorBudget || errorAvailableMonths)
     return (
       "An Error has occurred" + errorLiabilities?.message || errorTotal?.message
     );
@@ -258,10 +261,11 @@ function Liabilities() {
   const isDeleteButtonVisible = selectedIds.size > 0;
   const date: Date = new Date();
   const d = new Date(); // current date
-  date.setMonth(date.getMonth() - 1); // Subtract one month
+  date.setMonth(date.getMonth() - 1);
+  const availableMonths = dataAvailableMonths?.availableMonths || []; // Subtract one month
   return (
     <div>
-      <TooltipHistory />
+      <TooltipHistory availableMonths={availableMonths} />
       <div className="p-2 max-w-4xl m-auto">
         <h1 className="text-2xl text-center mb-2">
           {d.toLocaleString("default", { month: "long" }) +

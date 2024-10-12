@@ -53,12 +53,26 @@ export const limitQuery = queryOptions({
   queryFn: getLimit,
 });
 
+export const availableMonthsQuery = queryOptions({
+  queryKey: ["get-available-months"],
+  queryFn: getAvailableMonths,
+});
+
 // export const singleBudgetQuery = (id: string) =>
 //   queryOptions({
 //     queryKey: ["get-single-budget", id],
 //     queryFn: () => getSingleLiabilities({ id: id }),
 //     staleTime: 60 * 60 * 1000,
 //   });
+
+export async function getAvailableMonths() {
+  const res = await api.liabilities["available-months"].$get();
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+  const data = await res.json();
+  return data;
+}
 
 export async function getLiabilitiesHistoryDate() {
   const res = await api.liabilities["liabilities-history-date"].$get();

@@ -78,7 +78,6 @@ function CreateLiabilities() {
         className="max-w-sm m-auto"
         onSubmit={(e) => {
           e.preventDefault();
-          e.stopPropagation();
           form.handleSubmit();
         }}
       >

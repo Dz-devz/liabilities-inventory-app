@@ -60,6 +60,36 @@ export const liabilitiesRoute = new Hono()
 
     return c.json({ liabilities: liabilities });
   })
+  .get("/available-months", getProfile, async (c) => {
+    const user = c.var.user;
+
+    const liabilities = await db
+      .select()
+      .from(liabilitiesTable)
+      .where(eq(liabilitiesTable.userId, user.id))
+      .orderBy(desc(liabilitiesTable.date));
+
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-indexed (January = 0)
+    const currentYear = currentDate.getFullYear();
+
+    // Extract unique year-month combinations
+    const availableMonths = Array.from(
+      new Set(
+        liabilities
+          .map((liability) => {
+            const date = new Date(liability.date);
+            return `${date.getMonth() + 1} ${date.getFullYear()}`; // Month is 0-indexed
+          })
+          .filter((monthYear) => {
+            const [month, year] = monthYear.split(" ").map(Number);
+            return !(month - 1 === currentMonth && year === currentYear); // Exclude current month
+          })
+      )
+    );
+
+    return c.json({ availableMonths });
+  })
   .get("/:id{[0-9]+}", getProfile, async (c) => {
     const user = c.var.user;
     const id = Number.parseInt(c.req.param("id"));
