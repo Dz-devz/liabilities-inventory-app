@@ -1,4 +1,4 @@
-import LiabilitiesHistory from "@/routes/liabilities-history";
+import LiabilitiesHistory from "@/routes/liabilities-history"; // Adjust path if needed
 import { Link } from "@tanstack/react-router";
 import {
   Tooltip,
@@ -7,8 +7,17 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 
+type Liability = {
+  id: number;
+  date: string;
+  userId: string;
+  title: string;
+  amount: string;
+  createdAt: string | null;
+};
 interface TooltipHistoryProps {
-  availableMonths: string[]; // Keep this as string[]
+  availableMonths: string[];
+  liabilitiesHistory: { month: string; liabilities: Liability[] }[];
 }
 
 const monthNames = [
@@ -26,13 +35,25 @@ const monthNames = [
   "December",
 ];
 
-const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
+const TooltipHistory: React.FC<TooltipHistoryProps> = ({
+  availableMonths,
+  liabilitiesHistory,
+}) => {
   return (
     <TooltipProvider>
       <div className="flex flex-row gap-4 m-2">
         {availableMonths.map((month, idx) => {
           const [monthNumber, year] = month.split(" ").map(Number);
           const monthName = monthNames[monthNumber - 1];
+
+          // Find the liabilities for the current month
+          const currentMonthLiabilities = liabilitiesHistory.find(
+            (history) => history.month === `${monthName} ${year}`
+          )?.liabilities;
+
+          // Debugging: Log the current month and corresponding liabilities
+          console.log(`Month: ${monthName} ${year}`, currentMonthLiabilities);
+
           return (
             <Tooltip key={idx}>
               <Link to={`/liabilities-history?month=${month}`}>
@@ -59,14 +80,18 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
                         className="font-semibold text-gray-900 text-lg"
                         style={{ letterSpacing: "0.5px" }}
                       >
-                        {monthName} {year} History{" "}
+                        {monthName} {year} History
                       </span>
                     </div>
                   </div>
                 </TooltipTrigger>
               </Link>
               <TooltipContent className="w-100 h-100 p-0">
-                <LiabilitiesHistory isTooltip={true} />
+                {/* Pass only the liabilities for the current month */}
+                <LiabilitiesHistory
+                  isTooltip={true}
+                  liabilities={currentMonthLiabilities || []}
+                />
               </TooltipContent>
             </Tooltip>
           );

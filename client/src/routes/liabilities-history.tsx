@@ -12,12 +12,30 @@ import {
 import { budgetQuery, drainedQuery, liabilitiesHistoryQuery } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/liabilities-history")({
   component: LiabilitiesHistory,
 });
 
-export default function LiabilitiesHistory({ isTooltip = false }) {
+type Liability = {
+  id: number;
+  date: string;
+  userId: string;
+  title: string;
+  amount: string;
+  createdAt: string | null;
+};
+
+interface LiabilitiesHistoryProps {
+  isTooltip?: boolean; // Make isTooltip optional
+  liabilities: Liability[]; // Add liabilities as a required prop
+}
+
+export default function LiabilitiesHistory({
+  isTooltip = false,
+  liabilities,
+}: LiabilitiesHistoryProps) {
   const {
     isPending: isPendingLiabilitiesHistory,
     error: errorLiabilitiesHistory,
@@ -34,9 +52,52 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
     data: totalBudgetData,
   } = useQuery(budgetQuery);
 
+  const [liabilitiesHistory, setLiabilitiesHistory] = useState<
+    { month: string; liabilities: Liability[] }[]
+  >([]);
+
+  useEffect(() => {
+    // Combine fetched liabilities with the passed liabilities
+    const allLiabilities = [
+      ...(liabilitiesDataHistory?.liabilities || []),
+      ...liabilities,
+    ];
+
+    const now = new Date();
+    const monthsToShow = 12;
+    const updatedHistory: { month: string; liabilities: Liability[] }[] = [];
+
+    for (let i = 1; i < monthsToShow; i++) {
+      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthKey = monthDate.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+
+      // Filter liabilities for this specific month
+      const monthlyLiabilities = allLiabilities.filter((liability) => {
+        const liabilityDate = new Date(liability.date);
+        return (
+          liabilityDate.getMonth() === monthDate.getMonth() &&
+          liabilityDate.getFullYear() === monthDate.getFullYear()
+        );
+      });
+
+      // Only add to history if there are liabilities for that month
+      if (monthlyLiabilities.length > 0) {
+        updatedHistory.push({
+          month: monthKey,
+          liabilities: monthlyLiabilities,
+        });
+      }
+    }
+
+    setLiabilitiesHistory(updatedHistory);
+  }, [liabilitiesDataHistory, liabilities]);
+
   if (errorLiabilitiesHistory || errorTotal || errorBudget) {
     return (
-      "Error can't connect to " +
+      "Error: " +
       errorLiabilitiesHistory?.message +
       " " +
       errorTotal?.message +
@@ -47,34 +108,18 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
 
   const budget = totalBudgetData?.budget[0];
   const budgetD = budget?.limit;
-
   const remainingBudget = Number(budgetD) - Number(totalDrainedData?.total);
-
-  // const date: Date = new Date();
-  const d: Date = new Date(); // Date
-  // let year = date.getFullYear();
-  // let pastMonth = date.getMonth() - 1;
-  d.setMonth(d.getMonth() - 1); // past month
-  const past = d.toLocaleString("default", { month: "long" });
-
-  // if (pastMonth < 0) {
-  //   pastMonth = 11; // December
-  //   year--; // Move to the previous year
-  // }
-
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
 
   return (
     <div className={`p-2 ${isTooltip ? "max-w-full" : "max-w-4xl"} m-auto`}>
       <h1
         className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
       >
-        {past + " Liabilities and Budget"}
+        Liabilities and Budget
       </h1>
       {totalBudgetData?.budget.map((budget) => (
         <p
+          key={budget.id}
           className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
         >
           {isPendingBudget ? "Getting Budget..." : budget.limit}
@@ -82,14 +127,11 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
       ))}
       <Table className={isTooltip ? "text-sm" : ""}>
         <TableCaption>
-          {d.toLocaleString("default", { month: "long" })} Remaining Balance:{" "}
+          Remaining Balance:{" "}
           {isPendingBudget ? (
             "Getting Remaining Budget..."
           ) : (
-            <span className="font-semibold text-white">
-              {" "}
-              {remainingBudget}{" "}
-            </span>
+            <span className="font-semibold text-white">{remainingBudget}</span>
           )}
         </TableCaption>
         <TableHeader>
@@ -107,35 +149,38 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isPendingLiabilitiesHistory
-            ? Array(3) // Reduced number of skeletons for tooltip
-                .fill(0)
-                .map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="font-medium">
-                      <Skeleton className="h-4" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4" />
-                    </TableCell>
-                  </TableRow>
-                ))
-            : liabilitiesDataHistory?.liabilities
-                .filter((liability) => {
-                  const liabilityDate = new Date(liability.date);
-                  return (
-                    liabilityDate.getMonth() < currentMonth && // Compare month
-                    liabilityDate.getFullYear() === currentYear // Compare year
-                  );
-                })
-                .slice(0, 20) // Limit to 3 rows
-                .map((liability) => (
+          {isPendingLiabilitiesHistory ? (
+            Array(3)
+              .fill(0)
+              .map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell className="font-medium">
+                    <Skeleton className="h-4" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4" />
+                  </TableCell>
+                </TableRow>
+              ))
+          ) : liabilitiesHistory.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                No liabilities found for the last 12 months.
+              </TableCell>
+            </TableRow>
+          ) : (
+            liabilitiesHistory.map((monthlyData, index) => (
+              <div key={index}>
+                <h3 className="text-lg font-bold">
+                  Liabilities for {monthlyData.month}
+                </h3>
+                {monthlyData.liabilities.map((liability) => (
                   <TableRow key={liability.id}>
                     <TableCell className="font-medium">
                       {liability.id}
@@ -149,6 +194,9 @@ export default function LiabilitiesHistory({ isTooltip = false }) {
                     </TableCell>
                   </TableRow>
                 ))}
+              </div>
+            ))
+          )}
         </TableBody>
         <TableFooter>
           <TableRow>
