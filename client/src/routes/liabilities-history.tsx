@@ -179,10 +179,16 @@ export default function LiabilitiesHistory({
             </TableRow>
           ) : (
             liabilitiesHistory.map((monthlyData, index) => (
-              <div key={index}>
-                <h3 className="text-lg font-bold">
-                  Liabilities for {monthlyData.month}
-                </h3>
+              <>
+                <TableRow key={index}>
+                  <TableCell
+                    colSpan={4}
+                    className="text-lg font-bold text-center"
+                  >
+                    Liabilities for {monthlyData.month}
+                  </TableCell>
+                </TableRow>
+
                 {monthlyData.liabilities.map((liability) => (
                   <TableRow key={liability.id}>
                     <TableCell className="font-medium">
@@ -197,7 +203,7 @@ export default function LiabilitiesHistory({
                     </TableCell>
                   </TableRow>
                 ))}
-              </div>
+              </>
             ))
           )}
         </TableBody>
