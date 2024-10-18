@@ -67,15 +67,11 @@ export default function LiabilitiesHistory({
         );
       });
     },
-    [] // Add necessary dependencies here
+    []
   );
 
   useEffect(() => {
-    // Combine fetched liabilities with the passed liabilities
-    const allLiabilities = [
-      ...(liabilitiesDataHistory?.liabilities || []),
-      ...liabilities,
-    ];
+    const allLiabilities = liabilitiesDataHistory?.liabilities || [];
 
     const now = new Date();
     const monthsToShow = 12;
@@ -91,7 +87,7 @@ export default function LiabilitiesHistory({
       const monthlyLiabilities = filterLiabilities(allLiabilities, monthDate);
 
       // Only add to history if there are liabilities for that month
-      if (filterLiabilities.length > 0) {
+      if (monthlyLiabilities.length > 0) {
         updatedHistory.push({
           month: monthKey,
           liabilities: monthlyLiabilities,
