@@ -12,7 +12,7 @@ import {
 import { budgetQuery, drainedQuery, liabilitiesHistoryQuery } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/liabilities-history")({
   component: LiabilitiesHistory,
@@ -29,12 +29,11 @@ type Liability = {
 
 interface LiabilitiesHistoryProps {
   isTooltip?: boolean; // Make isTooltip optional
-  liabilities: Liability[]; // Add liabilities as a required prop
+  //  liabilities: Liability[]; // Add liabilities as a required prop
 }
 
 export default function LiabilitiesHistory({
   isTooltip = false,
-  liabilities,
 }: LiabilitiesHistoryProps) {
   const {
     isPending: isPendingLiabilitiesHistory,
@@ -56,6 +55,21 @@ export default function LiabilitiesHistory({
     { month: string; liabilities: Liability[] }[]
   >([]);
 
+  const liabilities: Liability[] = useMemo(() => [], []);
+
+  const filterLiabilities = useCallback(
+    (allLiabilities: Liability[], monthDate: Date) => {
+      return allLiabilities.filter((liability) => {
+        const liabilityDate = new Date(liability.date);
+        return (
+          liabilityDate.getMonth() === monthDate.getMonth() &&
+          liabilityDate.getFullYear() === monthDate.getFullYear()
+        );
+      });
+    },
+    [] // Add necessary dependencies here
+  );
+
   useEffect(() => {
     // Combine fetched liabilities with the passed liabilities
     const allLiabilities = [
@@ -74,17 +88,10 @@ export default function LiabilitiesHistory({
         year: "numeric",
       });
 
-      // Filter liabilities for this specific month
-      const monthlyLiabilities = allLiabilities.filter((liability) => {
-        const liabilityDate = new Date(liability.date);
-        return (
-          liabilityDate.getMonth() === monthDate.getMonth() &&
-          liabilityDate.getFullYear() === monthDate.getFullYear()
-        );
-      });
+      const monthlyLiabilities = filterLiabilities(allLiabilities, monthDate);
 
       // Only add to history if there are liabilities for that month
-      if (monthlyLiabilities.length > 0) {
+      if (filterLiabilities.length > 0) {
         updatedHistory.push({
           month: monthKey,
           liabilities: monthlyLiabilities,
@@ -93,7 +100,7 @@ export default function LiabilitiesHistory({
     }
 
     setLiabilitiesHistory(updatedHistory);
-  }, [liabilitiesDataHistory, liabilities]);
+  }, [liabilitiesDataHistory, liabilities, filterLiabilities]);
 
   if (errorLiabilitiesHistory || errorTotal || errorBudget) {
     return (

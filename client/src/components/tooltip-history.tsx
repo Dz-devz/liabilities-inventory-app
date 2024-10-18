@@ -7,17 +7,17 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 
-type Liability = {
-  id: number;
-  date: string;
-  userId: string;
-  title: string;
-  amount: string;
-  createdAt: string | null;
-};
+// type Liability = {
+//   id: number;
+//   date: string;
+//   userId: string;
+//   title: string;
+//   amount: string;
+//   createdAt: string | null;
+// };
 interface TooltipHistoryProps {
   availableMonths: string[];
-  liabilitiesHistory: { month: string; liabilities: Liability[] }[];
+  //  liabilitiesHistory: { month: string; liabilities: Liability[] }[];
 }
 
 const monthNames = [
@@ -35,10 +35,7 @@ const monthNames = [
   "December",
 ];
 
-const TooltipHistory: React.FC<TooltipHistoryProps> = ({
-  availableMonths,
-  liabilitiesHistory,
-}) => {
+const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
   return (
     <TooltipProvider>
       <div className="flex flex-row gap-4 m-2">
@@ -47,12 +44,6 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({
           const monthName = monthNames[monthNumber - 1];
 
           // Find the liabilities for the current month
-          const currentMonthLiabilities = liabilitiesHistory.find(
-            (history) => history.month === `${monthName} ${year}`
-          )?.liabilities;
-
-          // Debugging: Log the current month and corresponding liabilities
-          console.log(`Month: ${monthName} ${year}`, currentMonthLiabilities);
 
           return (
             <Tooltip key={idx}>
@@ -88,10 +79,7 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({
               </Link>
               <TooltipContent className="w-100 h-100 p-0">
                 {/* Pass only the liabilities for the current month */}
-                <LiabilitiesHistory
-                  isTooltip={true}
-                  liabilities={currentMonthLiabilities || []}
-                />
+                <LiabilitiesHistory isTooltip={true} />
               </TooltipContent>
             </Tooltip>
           );

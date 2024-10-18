@@ -266,10 +266,7 @@ function Liabilities() {
   return (
     <div>
       <div className="mr-auto">
-        <TooltipHistory
-          availableMonths={availableMonths}
-          liabilitiesHistory={[]}
-        />
+        <TooltipHistory availableMonths={availableMonths} />
       </div>
       <div className="p-2 max-w-4xl m-auto">
         <h1 className="text-2xl text-center mb-2">
