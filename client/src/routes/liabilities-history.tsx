@@ -11,25 +11,52 @@ import {
 } from "@/components/ui/table";
 import { budgetQuery, drainedQuery, liabilitiesHistoryQuery } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/liabilities-history")({
   component: LiabilitiesHistory,
+  // To get parameter in url of month and year
+  validateSearch: (search) => {
+    return {
+      month: search.month,
+      year: search.year,
+    };
+  },
 });
 
 interface LiabilitiesHistoryProps {
-  month: number;
+  monthProps: number;
   isTooltip?: boolean;
   monthName: string;
-  year: number;
+  yearProps: number;
 }
 
 export default function LiabilitiesHistory({
-  month,
+  monthProps,
   isTooltip = false,
   monthName,
-  year,
+  yearProps,
 }: LiabilitiesHistoryProps) {
+  // For getting parameter in url
+  const { month, year } = useSearch({ from: Route.fullPath });
+
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const monthN = monthNames[Number(month) - 1];
+
   const {
     isPending: isPendingLiabilitiesHistory,
     error: errorLiabilitiesHistory,
@@ -57,14 +84,18 @@ export default function LiabilitiesHistory({
     );
   }
 
-  const monthString = `${year}-${String(month).padStart(2, "0")}`;
-  console.log(monthString);
+  // Use isTooltip if its hover it will show the data on hover but if clicked it will use the monthString of useSearch like useSearchParams
+  const monthString = isTooltip
+    ? `${yearProps}-${String(monthProps).padStart(2, "0")}`
+    : `${year}-${String(month).padStart(2, "0")}`;
 
   // Get liabilities for the specified month when being hovered and clicked
   const liabilitiesHistory =
     liabilitiesDataHistory?.liabilities.filter((liability) =>
       liability.date.startsWith(monthString)
     ) || [];
+
+  console.log(monthString);
 
   const budget = totalBudgetData?.budget[0];
   const budgetD = budget?.limit;
@@ -75,7 +106,9 @@ export default function LiabilitiesHistory({
       <h1
         className={`text-lg ${isTooltip ? "text-center font-bold text-sm" : "text-2xl text-center mb-2 font-bold"}`}
       >
-        Liabilities for {monthName}
+        {isTooltip
+          ? `Liabilities History for ${monthName} ${yearProps}`
+          : `Liabilities History for ${monthN} ${year}`}
       </h1>
       {totalBudgetData?.budget.map((budget) => (
         <p

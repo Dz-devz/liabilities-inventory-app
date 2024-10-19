@@ -82,9 +82,9 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
               <TooltipContent className="w-100 h-100 p-0">
                 <LiabilitiesHistory
                   isTooltip={true}
-                  month={monthNumber}
+                  monthProps={monthNumber}
                   monthName={monthName}
-                  year={year}
+                  yearProps={year}
                 />
               </TooltipContent>
             </Tooltip>
