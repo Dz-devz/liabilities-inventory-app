@@ -43,7 +43,7 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
           const [monthNumber, year] = month.split(" ").map(Number);
           const monthName = monthNames[monthNumber - 1];
 
-          // Find the liabilities for the current month
+          console.log(monthNumber);
 
           return (
             <Tooltip key={idx}>
@@ -78,8 +78,11 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
                 </TooltipTrigger>
               </Link>
               <TooltipContent className="w-100 h-100 p-0">
-                {/* Pass only the liabilities for the current month */}
-                <LiabilitiesHistory isTooltip={true} />
+                <LiabilitiesHistory
+                  isTooltip={true}
+                  month={monthNumber}
+                  monthName={monthName}
+                />
               </TooltipContent>
             </Tooltip>
           );

@@ -12,102 +12,58 @@ import {
 import { budgetQuery, drainedQuery, liabilitiesHistoryQuery } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/liabilities-history")({
   component: LiabilitiesHistory,
 });
 
-type Liability = {
-  id: number;
-  date: string;
-  userId: string;
-  title: string;
-  amount: string;
-  createdAt: string | null;
-};
-
 interface LiabilitiesHistoryProps {
-  isTooltip?: boolean; // Make isTooltip optional
-  //  liabilities: Liability[]; // Add liabilities as a required prop
+  month: number; // e.g., "2024-09" for September 2024
+  isTooltip?: boolean;
+  monthName: string;
 }
 
 export default function LiabilitiesHistory({
+  month,
   isTooltip = false,
+  monthName,
 }: LiabilitiesHistoryProps) {
   const {
     isPending: isPendingLiabilitiesHistory,
     error: errorLiabilitiesHistory,
     data: liabilitiesDataHistory,
   } = useQuery(liabilitiesHistoryQuery);
+
   const {
     isPending: isPendingTotal,
     error: errorTotal,
     data: totalDrainedData,
   } = useQuery(drainedQuery);
+
   const {
     isPending: isPendingBudget,
     error: errorBudget,
     data: totalBudgetData,
   } = useQuery(budgetQuery);
 
-  const [liabilitiesHistory, setLiabilitiesHistory] = useState<
-    { month: string; liabilities: Liability[] }[]
-  >([]);
-
-  const liabilities: Liability[] = useMemo(() => [], []);
-
-  const filterLiabilities = useCallback(
-    (allLiabilities: Liability[], monthDate: Date) => {
-      return allLiabilities.filter((liability) => {
-        const liabilityDate = new Date(liability.date);
-        return (
-          liabilityDate.getMonth() === monthDate.getMonth() &&
-          liabilityDate.getFullYear() === monthDate.getFullYear()
-        );
-      });
-    },
-    []
-  );
-
-  useEffect(() => {
-    const allLiabilities = liabilitiesDataHistory?.liabilities || [];
-
-    const now = new Date();
-    const monthsToShow = 12;
-    const updatedHistory: { month: string; liabilities: Liability[] }[] = [];
-
-    for (let i = 1; i < monthsToShow; i++) {
-      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const monthKey = monthDate.toLocaleString("default", {
-        month: "long",
-        year: "numeric",
-      });
-
-      const monthlyLiabilities = filterLiabilities(allLiabilities, monthDate);
-
-      // Only add to history if there are liabilities for that month
-      if (monthlyLiabilities.length > 0) {
-        updatedHistory.push({
-          month: monthKey,
-          liabilities: monthlyLiabilities,
-        });
-      }
-    }
-
-    setLiabilitiesHistory(updatedHistory);
-  }, [liabilitiesDataHistory, liabilities, filterLiabilities]);
-
   if (errorLiabilitiesHistory || errorTotal || errorBudget) {
     return (
-      "Error: " +
-      errorLiabilitiesHistory?.message +
-      " " +
-      errorTotal?.message +
-      " " +
-      errorBudget?.message
+      <div>
+        Error: {errorLiabilitiesHistory?.message} {errorTotal?.message}{" "}
+        {errorBudget?.message}
+      </div>
     );
   }
+  const year = new Date().getFullYear(); // Use the current year or replace with a specific year
+
+  const monthString = `${year}-${String(month).padStart(2, "0")}`;
+  console.log(monthString);
+
+  // Get liabilities for the specified month
+  const liabilitiesHistory =
+    liabilitiesDataHistory?.liabilities.filter((liability) =>
+      liability.date.startsWith(monthString)
+    ) || [];
 
   const budget = totalBudgetData?.budget[0];
   const budgetD = budget?.limit;
@@ -118,7 +74,7 @@ export default function LiabilitiesHistory({
       <h1
         className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
       >
-        Liabilities and Budget
+        Liabilities for {monthName}
       </h1>
       {totalBudgetData?.budget.map((budget) => (
         <p
@@ -174,36 +130,19 @@ export default function LiabilitiesHistory({
           ) : liabilitiesHistory.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4} className="text-center">
-                No liabilities found for the last 12 months.
+                No liabilities found for {monthName}.
               </TableCell>
             </TableRow>
           ) : (
-            liabilitiesHistory.map((monthlyData, index) => (
-              <>
-                <TableRow key={index}>
-                  <TableCell
-                    colSpan={4}
-                    className="text-lg font-bold text-center"
-                  >
-                    Liabilities for {monthlyData.month}
-                  </TableCell>
-                </TableRow>
-
-                {monthlyData.liabilities.map((liability) => (
-                  <TableRow key={liability.id}>
-                    <TableCell className="font-medium">
-                      {liability.id}
-                    </TableCell>
-                    <TableCell className="hover:text-[#e1d6d6] hover:underline">
-                      {liability.title}
-                    </TableCell>
-                    <TableCell>{liability.date.split("T")[0]}</TableCell>
-                    <TableCell className="text-right">
-                      {liability.amount}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </>
+            liabilitiesHistory.map((liability) => (
+              <TableRow key={liability.id}>
+                <TableCell className="font-medium">{liability.id}</TableCell>
+                <TableCell className="hover:text-[#e1d6d6] hover:underline">
+                  {liability.title}
+                </TableCell>
+                <TableCell>{liability.date.split("T")[0]}</TableCell>
+                <TableCell className="text-right">{liability.amount}</TableCell>
+              </TableRow>
             ))
           )}
         </TableBody>
