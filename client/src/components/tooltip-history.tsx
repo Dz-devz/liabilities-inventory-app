@@ -42,13 +42,12 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
         {availableMonths.map((month, idx) => {
           const [monthNumber, year] = month.split(" ").map(Number);
           const monthName = monthNames[monthNumber - 1];
-
-          console.log(monthNumber);
-
           return (
             <Tooltip key={idx}>
+              {/* Added Search inside link for useSearch to covert it to queryParams to navigate to liabilities history pge with month and year*/}
               <Link
-                to={`/liabilities-history?month=${monthNumber}&year=${year}`}
+                to="/liabilities-history"
+                search={{ month: monthNumber, year: year }}
               >
                 <TooltipTrigger>
                   <div
