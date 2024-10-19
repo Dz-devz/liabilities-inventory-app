@@ -82,6 +82,7 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
                   isTooltip={true}
                   month={monthNumber}
                   monthName={monthName}
+                  year={year}
                 />
               </TooltipContent>
             </Tooltip>

@@ -18,15 +18,17 @@ export const Route = createFileRoute("/liabilities-history")({
 });
 
 interface LiabilitiesHistoryProps {
-  month: number; // e.g., "2024-09" for September 2024
+  month: number;
   isTooltip?: boolean;
   monthName: string;
+  year: number;
 }
 
 export default function LiabilitiesHistory({
   month,
   isTooltip = false,
   monthName,
+  year,
 }: LiabilitiesHistoryProps) {
   const {
     isPending: isPendingLiabilitiesHistory,
@@ -54,12 +56,11 @@ export default function LiabilitiesHistory({
       </div>
     );
   }
-  const year = new Date().getFullYear(); // Use the current year or replace with a specific year
 
   const monthString = `${year}-${String(month).padStart(2, "0")}`;
   console.log(monthString);
 
-  // Get liabilities for the specified month
+  // Get liabilities for the specified month when being hovered and clicked
   const liabilitiesHistory =
     liabilitiesDataHistory?.liabilities.filter((liability) =>
       liability.date.startsWith(monthString)
