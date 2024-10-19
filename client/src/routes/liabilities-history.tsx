@@ -73,7 +73,7 @@ export default function LiabilitiesHistory({
   return (
     <div className={`p-2 ${isTooltip ? "max-w-full" : "max-w-4xl"} m-auto`}>
       <h1
-        className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
+        className={`text-lg ${isTooltip ? "text-center font-bold text-sm" : "text-2xl text-center mb-2 font-bold"}`}
       >
         Liabilities for {monthName}
       </h1>
@@ -130,7 +130,7 @@ export default function LiabilitiesHistory({
               ))
           ) : liabilitiesHistory.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center">
+              <TableCell colSpan={4} className="text-center font-bold">
                 No liabilities found for {monthName}.
               </TableCell>
             </TableRow>

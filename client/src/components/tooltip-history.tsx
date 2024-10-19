@@ -47,7 +47,9 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
 
           return (
             <Tooltip key={idx}>
-              <Link to={`/liabilities-history?month=${month}`}>
+              <Link
+                to={`/liabilities-history?month=${monthNumber}&year=${year}`}
+              >
                 <TooltipTrigger>
                   <div
                     className="w-50 h-30 p-2 flex items-center justify-center rounded-md transition-all duration-200 cursor-pointer"
