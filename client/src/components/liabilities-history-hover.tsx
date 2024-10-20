@@ -26,19 +26,19 @@ export default function LiabilitiesHistoryHover({
   yearProps,
 }: LiabilitiesHistoryProps) {
   const {
-    isPending: isPendingLiabilitiesHistory,
+    isLoading: isPendingLiabilitiesHistory,
     error: errorLiabilitiesHistory,
     data: liabilitiesDataHistory,
   } = useQuery(liabilitiesHistoryQuery);
 
   const {
-    isPending: isPendingTotal,
+    isLoading: isPendingTotal,
     error: errorTotal,
     data: totalDrainedData,
   } = useQuery(drainedQuery);
 
   const {
-    isPending: isPendingBudget,
+    isLoading: isPendingBudget,
     error: errorBudget,
     data: totalBudgetData,
   } = useQuery(budgetQuery);

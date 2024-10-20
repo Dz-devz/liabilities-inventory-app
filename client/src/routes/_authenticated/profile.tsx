@@ -10,12 +10,12 @@ export const Route = createFileRoute("/_authenticated/profile")({
 function Profile() {
   const { isPending, error, data } = useQuery(profileQuery);
   const {
-    isPending: isPendingTotalLiabilities,
+    isLoading: isPendingTotalLiabilities,
     error: errorTotalLiabilities,
     data: totalLiabilitiesData,
   } = useQuery(drainedQuery);
   const {
-    isPending: isPendingBudget,
+    isLoading: isPendingBudget,
     error: errorBudget,
     data: budgetData,
   } = useQuery(budgetQuery);

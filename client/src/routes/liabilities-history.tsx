@@ -46,19 +46,19 @@ export default function LiabilitiesHistory() {
   const monthN = monthNames[Number(month) - 1];
 
   const {
-    isPending: isPendingLiabilitiesHistory,
+    isLoading: isPendingLiabilitiesHistory,
     error: errorLiabilitiesHistory,
     data: liabilitiesDataHistory,
   } = useQuery(liabilitiesHistoryQuery);
 
   const {
-    isPending: isPendingTotal,
+    isLoading: isPendingTotal,
     error: errorTotal,
     data: totalDrainedData,
   } = useQuery(drainedQuery);
 
   const {
-    isPending: isPendingBudget,
+    isLoading: isPendingBudget,
     error: errorBudget,
     data: totalBudgetData,
   } = useQuery(budgetQuery);

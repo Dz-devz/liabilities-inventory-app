@@ -164,17 +164,17 @@ function Liabilities() {
   };
 
   const {
-    isPending: isPendingLiabilities,
+    isLoading: isPendingLiabilities,
     error: errorLiabilities,
     data: liabilitiesData,
   } = useQuery(liabilitiesQuery);
   const {
-    isPending: isPendingTotal,
+    isLoading: isPendingTotal,
     error: errorTotal,
     data: totalDrainedData,
   } = useQuery(drainedQuery);
   const {
-    isPending: isPendingBudget,
+    isLoading: isPendingBudget,
     error: errorBudget,
     data: getBudget,
   } = useQuery(budgetQuery);
@@ -308,7 +308,7 @@ function Liabilities() {
                   </div>
                 </form>
               ) : (
-                getBudget.budget.map((budget) => (
+                getBudget?.budget.map((budget) => (
                   <form
                     key={budget.id}
                     className="max-w-sm m-auto"
@@ -434,7 +434,7 @@ function Liabilities() {
             <TableRow>
               <TableCell colSpan={3}>Total Liabilities Spent</TableCell>
               <TableCell className="text-right">
-                {isPendingTotal ? "Loading..." : totalDrainedData.total}
+                {isPendingTotal ? "Loading..." : totalDrainedData?.total}
               </TableCell>
               <TableCell>
                 <Checkbox
