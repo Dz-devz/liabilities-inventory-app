@@ -349,7 +349,7 @@ function Liabilities() {
               ) : (
                 <span className="font-semibold text-white">
                   {" "}
-                  {remainingBudget}{" "}
+                  {`${remainingBudget}.00`}{" "}
                 </span>
               )}
             </h2>

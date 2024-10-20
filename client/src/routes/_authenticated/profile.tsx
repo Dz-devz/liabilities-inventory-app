@@ -23,7 +23,8 @@ function Profile() {
   const budget = budgetData?.budget[0];
   const budgetD = budget?.limit;
 
-  const remainingBudget = Number(budgetD) - Number(totalLiabilitiesData?.total);
+  const remainingBudget =
+    Number(budgetD) - Number(totalLiabilitiesData?.total) + ".00";
 
   if (isPending || isPendingTotalLiabilities || isPendingBudget)
     return "Loading...";
@@ -44,12 +45,12 @@ function Profile() {
         </Avatar>
         <div>
           <p className="text-2xl font-semibold">
-            {data.user.given_name} {data.user.family_name}
+            Hi! There, {data.user.given_name} {data.user.family_name}
           </p>
         </div>
       </div>
       <div>
-        <h2 className="text-xl font-bold">Liability Stats</h2>
+        <h2 className="text-xl font-bold mb-2">Liability Stats</h2>
         <ul className="space-y-1">
           <li>
             <strong>Total Liabilities:</strong> ₱{totalLiabilitiesData?.total}
