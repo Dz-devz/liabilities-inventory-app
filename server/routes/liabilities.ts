@@ -83,9 +83,15 @@ export const liabilitiesRoute = new Hono()
       .orderBy(desc(liabilitiesTable.createdAt))
       .limit(100);
 
+    const budget = await db
+      .select()
+      .from(budgetTable)
+      .where(eq(budgetTable.userId, user.id))
+      .orderBy(desc(budgetTable.createdAt));
+
     console.log(liabilities);
 
-    return c.json({ liabilities: liabilities });
+    return c.json({ liabilities: liabilities, budget: budget });
   })
   .get("/available-months", getProfile, async (c) => {
     const user = c.var.user;

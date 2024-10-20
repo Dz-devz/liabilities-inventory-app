@@ -189,7 +189,6 @@ export async function deleteLiabilities(ids: number[]) {
   const res = await api.liabilities.$delete({
     json: { ids },
   });
-
   if (!res.ok) {
     throw new Error("server error");
   }
