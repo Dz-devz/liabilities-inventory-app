@@ -11,40 +11,20 @@ import {
 } from "@/components/ui/table";
 import { budgetQuery, drainedQuery, liabilitiesHistoryQuery } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/liabilities-history")({
-  component: LiabilitiesHistory,
-  // To get parameter in url of month and year
-  validateSearch: (search) => {
-    return {
-      month: search.month,
-      year: search.year,
-    };
-  },
-});
+interface LiabilitiesHistoryProps {
+  monthProps: number;
+  isTooltip?: boolean;
+  monthName: string;
+  yearProps: number;
+}
 
-export default function LiabilitiesHistory() {
-  // For getting parameter in url
-  const { month, year } = Route.useSearch();
-
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const monthN = monthNames[Number(month) - 1];
-
+export default function LiabilitiesHistoryHover({
+  monthProps,
+  isTooltip = false,
+  monthName,
+  yearProps,
+}: LiabilitiesHistoryProps) {
   const {
     isPending: isPendingLiabilitiesHistory,
     error: errorLiabilitiesHistory,
@@ -73,8 +53,7 @@ export default function LiabilitiesHistory() {
   }
 
   // Use isTooltip if its hover it will show the data on hover but if clicked it will use the monthString of useSearch like useSearchParams
-  const monthString = `${year}-${String(month).padStart(2, "0")}`;
-
+  const monthString = `${yearProps}-${String(monthProps).padStart(2, "0")}`;
   // Get liabilities for the specified month when being hovered and clicked
   const liabilitiesHistory =
     liabilitiesDataHistory?.liabilities.filter((liability) =>
@@ -88,16 +67,21 @@ export default function LiabilitiesHistory() {
   const remainingBudget = Number(budgetD) - Number(totalDrainedData?.total);
 
   return (
-    <div className={`p-2 max-w-4xl m-auto`}>
-      <h1 className="text-lg text-center mb-2 font-bold">
-        {`Liabilities History for ${monthN} ${year}`}
+    <div className={`p-2 ${isTooltip ? "max-w-full" : "max-w-4xl"} m-auto`}>
+      <h1
+        className={`text-lg ${isTooltip ? "text-center font-bold text-sm" : "text-2xl text-center mb-2 font-bold"}`}
+      >
+        {`Liabilities History for ${monthName} ${yearProps}`}
       </h1>
       {totalBudgetData?.budget.map((budget) => (
-        <p key={budget.id} className={`text-lg text-center mb-2`}>
+        <p
+          key={budget.id}
+          className={`text-lg ${isTooltip ? "text-center text-sm" : "text-2xl text-center mb-2"}`}
+        >
           {isPendingBudget ? "Getting Budget..." : budget.limit}
         </p>
       ))}
-      <Table>
+      <Table className={isTooltip ? "text-sm" : ""}>
         <TableCaption>
           Remaining Balance:{" "}
           {isPendingBudget ? (
@@ -108,10 +92,16 @@ export default function LiabilitiesHistory() {
         </TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[80px]">Id</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className={`w-[80px] ${isTooltip ? "text-sm" : ""}`}>
+              Id
+            </TableHead>
+            <TableHead className={isTooltip ? "text-sm" : ""}>
+              Category
+            </TableHead>
+            <TableHead className={isTooltip ? "text-sm" : ""}>Date</TableHead>
+            <TableHead className={`text-right ${isTooltip ? "text-sm" : ""}`}>
+              Amount
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -137,7 +127,7 @@ export default function LiabilitiesHistory() {
           ) : liabilitiesHistory.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4} className="text-center font-bold">
-                No liabilities found for {monthN}.
+                No liabilities found for {monthName}.
               </TableCell>
             </TableRow>
           ) : (

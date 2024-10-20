@@ -4,6 +4,7 @@ import {
   Link,
   Outlet,
 } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import logo from "/logo-tracknstock.png";
 
 type MyRouterContext = {
@@ -85,6 +86,7 @@ function Root() {
         <hr />
         <div className="flex-1 p-4">
           <Outlet />
+          <TanStackRouterDevtools />
         </div>
       </div>
     </div>

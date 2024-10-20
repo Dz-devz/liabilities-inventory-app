@@ -1,5 +1,5 @@
-import LiabilitiesHistory from "@/routes/liabilities-history"; // Adjust path if needed
 import { Link } from "@tanstack/react-router";
+import LiabilitiesHistoryHover from "./liabilities-history-hover";
 import {
   Tooltip,
   TooltipContent,
@@ -44,7 +44,7 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
           const monthName = monthNames[monthNumber - 1];
           return (
             <Tooltip key={idx}>
-              {/* Added Search inside link for useSearch to covert it to queryParams to navigate to liabilities history pge with month and year*/}
+              {/* Added Search inside link for useSearch to covert it to queryParams to navigate to liabilities history page with month and year and also to avoid bugs when using useSearch*/}
               <Link
                 to="/liabilities-history"
                 search={{ month: monthNumber, year: year }}
@@ -79,7 +79,7 @@ const TooltipHistory: React.FC<TooltipHistoryProps> = ({ availableMonths }) => {
                 </TooltipTrigger>
               </Link>
               <TooltipContent className="w-100 h-100 p-0">
-                <LiabilitiesHistory
+                <LiabilitiesHistoryHover
                   isTooltip={true}
                   monthProps={monthNumber}
                   monthName={monthName}
