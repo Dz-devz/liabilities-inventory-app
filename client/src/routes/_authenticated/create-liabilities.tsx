@@ -4,7 +4,11 @@ import { Label } from "@/components/ui/label";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 
-import { createLiabilities, liabilitiesQuery } from "@/lib/api";
+import {
+  createLiabilities,
+  liabilitiesHistoryQuery,
+  liabilitiesQuery,
+} from "@/lib/api";
 import { liabilitiesSchema } from "@server/types";
 import { useForm } from "@tanstack/react-form";
 
@@ -50,6 +54,9 @@ function CreateLiabilities() {
           ...pastLiabilities,
           liabilities: [recentLiabilities, ...pastLiabilities.liabilities],
         });
+
+        queryClient.invalidateQueries(liabilitiesHistoryQuery);
+        queryClient.invalidateQueries(liabilitiesQuery);
 
         navigate({ to: "/liabilities" });
       } catch (error) {
