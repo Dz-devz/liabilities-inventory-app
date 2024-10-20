@@ -391,7 +391,7 @@ function Liabilities() {
                   <TableRow
                     key={liability.id}
                     className={
-                      selectedIds.has(liability.id) ? "bg-slate-800" : ""
+                      selectedIds.has(liability.id) ? "bg-secondary" : ""
                     }
                   >
                     <TableCell className="font-medium">
